@@ -10,20 +10,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ce8cb7a7-e4ae-4a7c-9dc3-5e75ece52d56" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/.idea.PerfRefactor1/.idea/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/.idea.PerfRefactor1/.idea/.name" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/.idea.PerfRefactor1/.idea/encodings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/.idea.PerfRefactor1/.idea/indexLayout.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/.idea.Refactor1/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/.idea.Refactor1/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.run/Perf0.run.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Perf0/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Perf0/BenchmarkDotNet.Artifacts/results/PerfRefactor1.Program.MemoryBenchmark-report-github.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Perf0/BenchmarkDotNet.Artifacts/results/PerfRefactor1.Program.MemoryBenchmark-report.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Perf0/BenchmarkDotNet.Artifacts/results/PerfRefactor1.Program.MemoryBenchmark-report.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Perf0/MemoryAllocBenchmark.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Perf0/Perf0.csproj" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/PerfRefactor1.sln" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.Refactor1/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Refactor1/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -64,8 +51,16 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1669521026844</updated>
-      <workItem from="1669521030572" duration="6590000" />
+      <workItem from="1669521030572" duration="7504000" />
     </task>
+    <task id="LOCAL-00001" summary="memory perf commit">
+      <created>1669529959324</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1669529959324</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -86,6 +81,8 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
+    <MESSAGE value="memory perf commit" />
+    <option name="LAST_COMMIT_MESSAGE" value="memory perf commit" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
