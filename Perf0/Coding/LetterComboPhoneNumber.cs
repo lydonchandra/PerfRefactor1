@@ -24,7 +24,7 @@ public class LetterComboPhoneNumber
     {
         char[] validDigits = PhoneDic.Keys.ToArray();
         
-        ISet<char> letterSet = new HashSet<char>();
+        List<char> letterSet = new();
         List<string> results = new();
         if (string.IsNullOrWhiteSpace(digits)) return results;
                                                                            
@@ -42,10 +42,9 @@ public class LetterComboPhoneNumber
         }
 
         return GenerateLetters(letterSet);
-
     }
 
-    private static IList<string> GenerateLetters(ISet<char> letterSet)
+    private static IList<string> GenerateLetters(List<char> letterSet)
     {
         List<string> generatedPermutations = new (); 
         string currentPermutation = string.Empty;
@@ -76,7 +75,7 @@ public class LetterComboPhoneNumber
         }
     }
 
-    public static void Main(string[] args)
+    public static void Main2(string[] args)
     {
         IList<string> results = LetterCombinations("234");
         Console.WriteLine(results);
@@ -127,4 +126,5 @@ public class LetterComboPhoneNumber
 //                 Permutation(GenerationPermutations, [acb], [])
 //                     //currentPermutation = [acb]
 //                 GenerationPermutation += [acb]
+            
             
