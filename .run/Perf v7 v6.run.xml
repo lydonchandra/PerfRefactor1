@@ -1,8 +1,8 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Perf v7 v6" type="DotNetProject" factoryName=".NET Project" singleton="false">
-    <option name="EXE_PATH" value="$PROJECT_DIR$/Perf0/bin/Release/net6.0/Perf0" />
+    <option name="EXE_PATH" value="$PROJECT_DIR$/Perf0/bin/Debug/net6.0/Perf0.exe" />
     <option name="PROGRAM_PARAMETERS" value="--runtimes net7.0 net6.0  --filter *Jit* --join" />
-    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Perf0/bin/Release/net6.0" />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Perf0/bin/Debug/net6.0" />
     <option name="PASS_PARENT_ENVS" value="1" />
     <option name="USE_EXTERNAL_CONSOLE" value="0" />
     <option name="USE_MONO" value="0" />
