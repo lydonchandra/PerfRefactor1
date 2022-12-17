@@ -18,15 +18,21 @@ public class Md5VsSha256
         _data = new[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
     }
 
-    [Benchmark]
-    public List<List<int>> RecursivePermutation()
-    {
-        return Recursive.GetPermutations(_data.ToList());
-    }
+    // [Benchmark]
+    // public List<List<int>> RecursivePermutation()
+    // {
+    //     return Recursive.GetPermutations(_data.ToList());
+    // }
 
     [Benchmark]
     public List<List<int>> QuickPermutation()
     {
         return QuickPerm.GetPermutations(_data.ToList());
+    }
+
+    [Benchmark]
+    public List<int[]> QuickPermutationIntArray()
+    {
+        return QuickPerm.GetPermutationsIntArray(_data);
     }
 }
