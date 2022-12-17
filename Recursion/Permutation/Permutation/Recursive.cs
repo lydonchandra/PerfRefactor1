@@ -1,6 +1,6 @@
 ﻿namespace Permutation;
 
-public class Permutation
+public class Recursive
 {
     /*
     Write a function that takes in an array of unique integers and returns an
