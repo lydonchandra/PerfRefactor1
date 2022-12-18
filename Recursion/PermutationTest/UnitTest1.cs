@@ -89,7 +89,15 @@ public class UnitTest1
     }
 
     [Fact]
-    public void TestQuickPermMultiCores()
+    public void TestQuickPermArray2Batches()
+    {
+        List<int> input1 = new() { 1, 2, 3, 4 };
+        List<int[]> output1 = QuickPerm.GetPermutationsIntArray2Batches(input1.ToArray());
+        output1.ShouldBe(expectedOutputFor1234Array, true);
+    }
+
+    [Fact]
+    public void TestQuickPermArrayMultiCores()
     {
         List<int> input1 = new() { 1, 2, 3, 4 };
         List<int[]> output1 = QuickPerm.GetPermutationsIntArrayMultiCores(input1.ToArray());
@@ -102,6 +110,7 @@ public class UnitTest1
         List<int> input1 = new() { 1, 2, 3, 4, 5, 6, 7 };
         List<int[]> outputMultiCores = QuickPerm.GetPermutationsIntArrayMultiCores(input1.ToArray());
         List<int[]> outputSingleCore = QuickPerm.GetPermutationsIntArray(input1.ToArray());
+
         outputSingleCore.ShouldBe(outputMultiCores, true);
     }
 
@@ -109,8 +118,11 @@ public class UnitTest1
     public void TestCompareQuickPermWithMultiCoresEven()
     {
         List<int> input1 = new() { 1, 2, 3, 4, 5, 6 };
-        List<int[]> outputMultiCores = QuickPerm.GetPermutationsIntArrayMultiCores(input1.ToArray());
+        List<int[]> outputArray2Batches = QuickPerm.GetPermutationsIntArray2Batches(input1.ToArray());
         List<int[]> outputSingleCore = QuickPerm.GetPermutationsIntArray(input1.ToArray());
+        List<int[]> outputMultiCores = QuickPerm.GetPermutationsIntArrayMultiCores(input1.ToArray());
+
         outputSingleCore.ShouldBe(outputMultiCores, true);
+        outputSingleCore.ShouldBe(outputArray2Batches, true);
     }
 }

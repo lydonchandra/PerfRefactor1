@@ -24,15 +24,27 @@ public class Md5VsSha256
     //     return Recursive.GetPermutations(_data.ToList());
     // }
 
-    [Benchmark]
-    public List<List<int>> QuickPermutation()
-    {
-        return QuickPerm.GetPermutations(_data.ToList());
-    }
+    // [Benchmark]
+    // public List<List<int>> QuickPermutation()
+    // {
+    //     return QuickPerm.GetPermutations(_data.ToList());
+    // }
 
     [Benchmark]
     public List<int[]> QuickPermutationIntArray()
     {
         return QuickPerm.GetPermutationsIntArray(_data);
+    }
+
+    // [Benchmark]
+    // public List<int[]> QuickPermutationArray2Batches()
+    // {
+    //     return QuickPerm.GetPermutationsIntArray2Batches(_data);
+    // }
+
+    [Benchmark]
+    public List<int[]> QuickPermutationMultiCores()
+    {
+        return QuickPerm.GetPermutationsIntArrayMultiCores(_data);
     }
 }
