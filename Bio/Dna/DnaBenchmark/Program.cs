@@ -21,7 +21,7 @@ public class DnaBenchmark1
     [Benchmark]
     public async Task<bool> ValidateDnaFromFile()
     {
-        return await DnaUtil.ValidateDnaFromFile(_data);
+        return await DnaUtil.ValidateDnaFromFileAsChar(_data);
     }
 
     [Benchmark]

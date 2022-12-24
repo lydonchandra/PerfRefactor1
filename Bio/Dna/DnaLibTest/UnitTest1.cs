@@ -17,7 +17,7 @@ public class UnitTest1
     public async Task Test1a()
     {
         var path = "gene.fna";
-        var valid = await DnaUtil.ValidateDnaFromFile(path);
+        var valid = await DnaUtil.ValidateDnaFromFileAsChar(path);
         valid.ShouldBe(true);
     }
 

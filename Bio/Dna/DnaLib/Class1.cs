@@ -19,7 +19,7 @@ public class DnaUtil
         return isValid;
     }
 
-    public static async Task<bool> ValidateDnaFromFile(string path)
+    public static async Task<bool> ValidateDnaFromFileAsChar(string path)
     {
         FileStream fs = new(path, FileMode.Open, FileAccess.Read);
         var buffer = new byte[64 * 1024];
