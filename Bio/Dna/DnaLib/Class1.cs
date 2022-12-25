@@ -4,26 +4,27 @@ namespace DnaLib;
 
 public class DnaUtil
 {
-    private static readonly char[] dnaLowerCase = { 'a', 'c', 'g', 't', 'A', 'C', 'G', 'T', '\n', '>' };
-    private static readonly byte[] dnaLowerCaseBytes = "acgtACGT\n>"u8.ToArray();
+    private const int BufferSize = 256 * 1_024;
+    private static readonly char[] DnaLowerCase = { 'a', 'c', 'g', 't', 'A', 'C', 'G', 'T', '\n', '>' };
+    private static readonly byte[] DnaLowerCaseBytes = "acgtACGT\n>"u8.ToArray();
 
     public static bool ValidateDna(ReadOnlySpan<char> dnaSeq)
     {
-        var isValid = dnaSeq.IndexOfAnyExcept(dnaLowerCase) < 0;
+        var isValid = dnaSeq.IndexOfAnyExcept(DnaLowerCase) < 0;
         return isValid;
     }
 
     public static bool ValidateDna(ReadOnlySpan<byte> dnaSeq)
     {
-        var isValid = dnaSeq.IndexOfAnyExcept(dnaLowerCaseBytes) < 0;
+        var isValid = dnaSeq.IndexOfAnyExcept(DnaLowerCaseBytes) < 0;
         return isValid;
     }
 
     public static async Task<bool> ValidateDnaFromFileAsChar(string path)
     {
         FileStream fs = new(path, FileMode.Open, FileAccess.Read);
-        var buffer = new byte[64 * 1024];
-        var bufferString = new char[64 * 1024];
+        var buffer = new byte[BufferSize];
+        var bufferString = new char[BufferSize];
 
         int read;
         do
@@ -40,7 +41,7 @@ public class DnaUtil
     public static async Task<bool> ValidateDnaFromFileAsByte(string path)
     {
         FileStream fs = new(path, FileMode.Open, FileAccess.Read);
-        var buffer = new byte[64 * 1024];
+        var buffer = new byte[BufferSize];
 
         int read;
         do
