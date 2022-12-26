@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Runtime.CompilerServices;
+using System.Text;
 
 namespace DnaLib;
 
@@ -27,6 +28,7 @@ public class DnaUtil
         return true;
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool ValidateDnaPad256(ReadOnlySpan<char> dnaSeq)
     {
         return dnaSeq.IndexOfAnyExcept(DnaLowerCasePad256) < 0;
@@ -42,13 +44,12 @@ public class DnaUtil
         return dnaSeq.IndexOfAnyExcept(DnaLowerCaseBytesPad128) < 0;
     }
 
-
     public static async Task<bool> ValidateDnaFromFileAsChar(string path)
     {
         FileStream fs = new(path, FileMode.Open, FileAccess.Read);
         var buffer = new byte[ElementCount];
         var bufferString = new char[ElementCount];
-        // if 512 elem, extra 2 * 512 bytes, uses extra 2*N compared to using byte array in ValidateDnaFromFileAsByte  
+        // if 512 elem, extra 2 * 512 bytes, uses extra 2*N compared to using byte array in ValidateDnaFromFileAsByte
 
         int read;
         do
@@ -66,6 +67,22 @@ public class DnaUtil
     {
         FileStream fs = new(path, FileMode.Open, FileAccess.Read);
         var buffer = new byte[ElementCount];
+
+        int read;
+        do
+        {
+            read = await fs.ReadAsync(buffer);
+            var valid = ValidateDnaPad128(buffer.AsSpan()[..read]);
+            if (!valid) return false;
+        } while (read > 0);
+
+        return true;
+    }
+
+    public static async Task<bool> ValidateDnaFromFileAsByteLargerBuffer(string path)
+    {
+        FileStream fs = new(path, FileMode.Open, FileAccess.Read);
+        var buffer = new byte[ElementCount * 8];
 
         int read;
         do

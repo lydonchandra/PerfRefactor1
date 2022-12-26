@@ -11,7 +11,8 @@ using DnaLib;
 var config = DefaultConfig.Instance.With(ConfigOptions.DisableOptimizationsValidator);
 config.AddColumn(new TagColumn("FileSize", s => "20MB"));
 
-var summary = BenchmarkRunner.Run<DnaBenchmark1>(config);
+// var summary = BenchmarkRunner.Run<DnaBenchmark1>(config);
+var summary2 = BenchmarkRunner.Run<DnaBenchmarkReadFile>(config);
 
 public enum DataSize
 {
@@ -90,5 +91,34 @@ public class DnaBenchmark1
     public bool ValidateDnaBytePad128()
     {
         return DnaUtil.ValidateDnaPad128(dataBytes[_path]);
+    }
+}
+
+[MemoryDiagnoser]
+[HideColumns("Error", "RatioSD")]
+[SimpleJob(1, 1, 3)]
+[Orderer(SummaryOrderPolicy.FastestToSlowest)]
+public class DnaBenchmarkReadFile
+{
+    [Params(DataSize.sm, DataSize.lg, DataSize.xl)]
+    public DataSize dataSize;
+
+    private string _path => "Data/gene-" + dataSize + ".fna";
+
+    [GlobalSetup]
+    public void SetupData()
+    {
+    }
+
+    [Benchmark(Baseline = true)]
+    public async Task<bool> ValidateDnaFromFileAsChar()
+    {
+        return await DnaUtil.ValidateDnaFromFileAsChar(_path);
+    }
+
+    [Benchmark]
+    public async Task<bool> ValidateDnaFromFileAsByte()
+    {
+        return await DnaUtil.ValidateDnaFromFileAsByte(_path);
     }
 }
