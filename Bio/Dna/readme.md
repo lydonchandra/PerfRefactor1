@@ -121,4 +121,25 @@ IterationCount=3 LaunchCount=2 WarmupCount=2
 * adding `[MethodImpl(MethodImplOptions.AggressiveInlining)]` into `ValidateDnaPad256` has no measurable effect.
 * Making the buffer larger, to 2MB, slow things down, for very small input, as expected
 
+## Shuffle
+
+* Control mask is the position of elements easier to see when expressed in binary format:
+    * given input [20, 21, 22, 23]
+    * `0b11_10_01_00` == `0xE4` => No shuffling, element stays the same
+    * `0b00_01_10_11` => reverse elements to [23, 22, 21, 20]
+
+```
+const int start = 20;
+const int length = 32;
+var arr1 = Enumerable.Range(start, start + length).ToArray();
+var arr1LeftPtr = (int*)arr1.AsMemory().Pin().Pointer;
+
+Vector128<int> left = Sse2.LoadVector128(arr1LeftPtr);  // left: 20, 21, 22, 23
+
+Vector128<int> reversedLeft = Sse2.Shuffle(left, 0b00_01_10_11);  // left: 23, 22, 21, 20
+Vector128<int> reversedLeft2 = Sse2.Shuffle(left, 0b11_10_01_00); // left: 20, 21, 22 , 23
+Vector128<int> reversedRight = Sse2.Shuffle(left, 0b00_01_00_01); // left: 21, 20, 21, 20
+```
+
+## Intel Assembly
 
