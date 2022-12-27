@@ -104,6 +104,12 @@ public class DnaBenchmark1
     {
         return DnaUtil.ValidateDnaVec256(dataBytes[_path]);
     }
+
+    [Benchmark]
+    public bool ValidateDnaContainsAnyExcept384()
+    {
+        return DnaUtil.ValidateDnaVec384(dataBytes[_path]);
+    }
 }
 
 [MemoryDiagnoser]

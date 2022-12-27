@@ -1,7 +1,7 @@
 # Note: DOTNET_JitDisasm=ValidateDnaVec256, no quotes
 
 Doing the following loop unrolling is ~20% faster,
-and as expected adding another Vector128<byte>, making it 3, slow things down as it does not fit into CPU registers
+and adding another Vector128<byte>, making it 3 (or even adding another one), does not increase performance further
 
 ```
 [MethodImpl(MethodImplOptions.AggressiveOptimization)]

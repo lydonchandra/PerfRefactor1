@@ -1,0 +1,83 @@
+/home/don/RiderProjects/Refactor1/Bio/Dna/DnaConsole/bin/Release/net7.0/DnaConsole
+; Assembly listing for method DnaLib.bla:ContainsAnyExcept(System.ReadOnlySpan`1[ubyte],<unnamed>):bool
+; Emitting BLENDED_CODE for X64 CPU with AVX - Unix
+; Tier-1 compilation
+; optimized code
+; rbp based frame
+; fully interruptible
+; No PGO data
+; 1 inlinees with PGO data; 3 single block inlinees; 0 inlinees without PGO data
+
+G_M000_IG01:                ;; offset=0000H
+       55                   push     rbp
+       4156                 push     r14
+       53                   push     rbx
+       4883EC30             sub      rsp, 48
+       C5F877               vzeroupper
+       488D6C2440           lea      rbp, [rsp+40H]
+       33C0                 xor      eax, eax
+       488945C8             mov      qword ptr [rbp-38H], rax
+       C4413857C0           vxorps   xmm8, xmm8
+       C5797F45D0           vmovdqa  xmmword ptr [rbp-30H], xmm8
+       C5797F45E0           vmovdqa  xmmword ptr [rbp-20H], xmm8
+       4C8BF7               mov      r14, rdi
+       8BDE                 mov      ebx, esi
+
+G_M000_IG02:                ;; offset=002AH
+       4885D2               test     rdx, rdx
+       7450                 je       SHORT G_M000_IG07
+
+G_M000_IG03:                ;; offset=002FH
+       488BFA               mov      rdi, rdx
+       8B7708               mov      esi, dword ptr [rdi+08H]
+
+G_M000_IG04:                ;; offset=0035H
+       48897DE0             mov      gword ptr [rbp-20H], rdi
+       33FF                 xor      edi, edi
+       897DE8               mov      dword ptr [rbp-18H], edi
+       8975EC               mov      dword ptr [rbp-14H], esi
+       488D7DE0             lea      rdi, bword ptr [rbp-20H]
+       488D75C8             lea      rsi, bword ptr [rbp-38H]
+       FF1579913300         call     [System.Memory`1[ubyte]:Pin():System.Buffers.MemoryHandle:this]
+       488B45D0             mov      rax, qword ptr [rbp-30H]
+       C5FA6F00             vmovdqu  xmm0, xmmword ptr [rax]
+       B801000000           mov      eax, 1
+       33FF                 xor      edi, edi
+       85DB                 test     ebx, ebx
+       7E24                 jle      SHORT G_M000_IG09
+                            align    [0 bytes for IG05]
+
+G_M000_IG05:                ;; offset=0062H
+       8BF7                 mov      esi, edi
+       C4C279780C36         vpbroadcastb xmm1, byte  ptr [r14+rsi]
+       C5F974C9             vpcmpeqb xmm1, xmm0, xmm1
+       C4E27917C9           vptest   xmm1, xmm1
+       740E                 je       SHORT G_M000_IG08
+       FFC7                 inc      edi
+       3BFB                 cmp      edi, ebx
+       7CE7                 jl       SHORT G_M000_IG05
+
+G_M000_IG06:                ;; offset=007BH
+       EB08                 jmp      SHORT G_M000_IG09
+
+G_M000_IG07:                ;; offset=007DH
+       33FF                 xor      rdi, rdi
+       33F6                 xor      esi, esi
+       EBB2                 jmp      SHORT G_M000_IG04
+
+G_M000_IG08:                ;; offset=0083H
+       33C0                 xor      eax, eax
+
+G_M000_IG09:                ;; offset=0085H
+       4883C430             add      rsp, 48
+       5B                   pop      rbx
+       415E                 pop      r14
+       5D                   pop      rbp
+       C3                   ret
+
+; Total bytes of code 142
+
+True
+
+Process finished with exit code 0.
+

@@ -45,13 +45,49 @@ public static class bla
 
             Vector128<byte> equals0;
             Vector128<byte> equals1;
-            for (var i = 0; i < input.Length - 3; i += 3)
+            for (var i = 0; i < input.Length - 2; i += 2)
             {
                 Vector128<byte> vecInput0 = Vector128.Create(input[i]);
                 Vector128<byte> vecInput1 = Vector128.Create(input[i + 1]);
                 equals0 = Vector128.Equals(vecExcept, vecInput0);
                 equals1 = Vector128.Equals(vecExcept, vecInput1);
                 if (equals0 != Vector128<byte>.Zero && equals1 != Vector128<byte>.Zero) continue;
+
+                valid = false;
+                break;
+            }
+            //todo handle end
+
+            return valid;
+        }
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveOptimization)]
+    public static bool ContainsAnyExcept384(this ReadOnlySpan<byte> input, byte[] except)
+    {
+        unsafe
+        {
+            var exceptPtr = (byte*)except.AsMemory().Pin().Pointer;
+            Vector128<byte> vecExcept = Vector128.Load(exceptPtr);
+
+            var valid = true;
+
+            Vector128<byte> equals0;
+            Vector128<byte> equals1;
+            Vector128<byte> equals2;
+            Vector128<byte> equals3;
+            for (var i = 0; i < input.Length - 4; i += 4)
+            {
+                Vector128<byte> vecInput0 = Vector128.Create(input[i]);
+                Vector128<byte> vecInput1 = Vector128.Create(input[i + 1]);
+                Vector128<byte> vecInput2 = Vector128.Create(input[i + 2]);
+                Vector128<byte> vecInput3 = Vector128.Create(input[i + 3]);
+                equals0 = Vector128.Equals(vecExcept, vecInput0);
+                equals1 = Vector128.Equals(vecExcept, vecInput1);
+                equals2 = Vector128.Equals(vecExcept, vecInput2);
+                equals3 = Vector128.Equals(vecExcept, vecInput3);
+                if (equals0 != Vector128<byte>.Zero && equals1 != Vector128<byte>.Zero &&
+                    equals2 != Vector128<byte>.Zero && equals3 != Vector128<byte>.Zero) continue;
 
                 valid = false;
                 break;
@@ -102,6 +138,11 @@ public class DnaUtil
     public static bool ValidateDnaVec256(ReadOnlySpan<byte> dnaSeq)
     {
         return dnaSeq.ContainsAnyExcept256(DnaLowerCaseBytes8);
+    }
+
+    public static bool ValidateDnaVec384(ReadOnlySpan<byte> dnaSeq)
+    {
+        return dnaSeq.ContainsAnyExcept384(DnaLowerCaseBytes8);
     }
 
     public static bool ValidateDna(ReadOnlySpan<byte> dnaSeq)
