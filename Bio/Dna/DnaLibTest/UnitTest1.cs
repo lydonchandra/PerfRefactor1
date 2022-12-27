@@ -20,7 +20,7 @@ public class UnitTest1
     [Fact]
     public void TestValidateChar()
     {
-        var dna = "acgtattaacgtattaacgtattaacgtattaacgtattaacgtattaacgtatta";
+        var dna = "ACGTATTAACGTATTAACGTATTAACGTATTAACGTATTAACGTATTAACGTATTA";
         var isValid = DnaUtil.ValidateDna(dna);
         isValid.ShouldBe(true);
     }
@@ -28,7 +28,7 @@ public class UnitTest1
     [Fact]
     public void TestValidateCharNaive()
     {
-        var dna = "acgtattaacgtattaacgtattaacgtattaacgtattaacgtattaacgtatta";
+        var dna = "ACGTATTAACGTATTAACGTATTAACGTATTAACGTATTAACGTATTAACGTATTA";
         var isValid = DnaUtil.ValidateDnaNaive(dna);
         isValid.ShouldBe(true);
     }
@@ -36,7 +36,7 @@ public class UnitTest1
     [Fact]
     public void TestValidateCharNaiveNotValid()
     {
-        var dna = "acgtattaacgtattaacgtattaacgtattaacgtattaacgtattaacgtattazZ";
+        var dna = "acgtattaacgtattaacgtattaacgtattaacgtattaacgtattaacgtattazz";
         var isValid = DnaUtil.ValidateDnaNaive(dna);
         isValid.ShouldBe(false);
     }
@@ -44,9 +44,12 @@ public class UnitTest1
     [Fact]
     public void TestValidateByte()
     {
-        var dna = "acgtattaacgtattaacgtattaacgtattaacgtattaacgtattaacgtatta";
+        var dna = "ACGTATTAACGTATTAACGTATTAACGTATTAACGTATTAACGTATTAACGTATTACACACACA";
         var dnaBytes = Encoding.UTF8.GetBytes(dna);
         var isValid = DnaUtil.ValidateDna(dnaBytes);
+        isValid.ShouldBe(true);
+
+        isValid = DnaUtil.ValidateDnaVec256(dnaBytes);
         isValid.ShouldBe(true);
     }
 
@@ -70,7 +73,7 @@ public class UnitTest1
     [Fact]
     public async Task TestReadString()
     {
-        var path = "Data/gene-lg.fna";
+        var path = "Data/gene-xl.fna";
 
         using FileStream fileStream = new(path, FileMode.Open, FileAccess.Read);
         using var streamReader = new StreamReader(fileStream);
@@ -81,6 +84,9 @@ public class UnitTest1
         valid.ShouldBe(true);
 
         valid = DnaUtil.ValidateDna(dataBytes);
+        valid.ShouldBe(true);
+
+        valid = DnaUtil.ValidateDnaVec256(dataBytes.AsSpan());
         valid.ShouldBe(true);
     }
 }

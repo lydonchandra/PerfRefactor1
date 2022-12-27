@@ -11,8 +11,8 @@ using DnaLib;
 var config = DefaultConfig.Instance.With(ConfigOptions.DisableOptimizationsValidator);
 config.AddColumn(new TagColumn("FileSize", s => "20MB"));
 
-// var summary = BenchmarkRunner.Run<DnaBenchmark1>(config);
-var summary2 = BenchmarkRunner.Run<DnaBenchmarkReadFile>(config);
+var summary = BenchmarkRunner.Run<DnaBenchmark1>(config);
+// var summary2 = BenchmarkRunner.Run<DnaBenchmarkReadFile>(config);
 
 public enum DataSize
 {
@@ -63,34 +63,40 @@ public class DnaBenchmark1
     //     return await DnaUtil.ValidateDnaFromFileAsByte(_path);
     // }
 
-    [Benchmark(Baseline = true)]
-    public bool ValidateDnaChar()
-    {
-        return DnaUtil.ValidateDna(data[_path]);
-    }
-
-    [Benchmark]
-    public bool ValidateDnaCharNaive()
-    {
-        return DnaUtil.ValidateDnaNaive(data[_path]);
-    }
-
-    [Benchmark]
-    public bool ValidateDnaCharPad256()
-    {
-        return DnaUtil.ValidateDnaPad256(data[_path]);
-    }
-
-    [Benchmark]
-    public bool ValidateDnaByte()
-    {
-        return DnaUtil.ValidateDna(dataBytes[_path]);
-    }
+    // [Benchmark(Baseline = true)]
+    // public bool ValidateDnaChar()
+    // {
+    //     return DnaUtil.ValidateDna(data[_path]);
+    // }
+    //
+    // [Benchmark]
+    // public bool ValidateDnaCharNaive()
+    // {
+    //     return DnaUtil.ValidateDnaNaive(data[_path]);
+    // }
+    //
+    // [Benchmark]
+    // public bool ValidateDnaCharPad256()
+    // {
+    //     return DnaUtil.ValidateDnaPad256(data[_path]);
+    // }
+    //
+    // [Benchmark]
+    // public bool ValidateDnaByte()
+    // {
+    //     return DnaUtil.ValidateDna(dataBytes[_path]);
+    // }
 
     [Benchmark]
     public bool ValidateDnaBytePad128()
     {
         return DnaUtil.ValidateDnaPad128(dataBytes[_path]);
+    }
+
+    [Benchmark]
+    public bool ValidateDnaContainsAnyExcept()
+    {
+        return DnaUtil.ValidateDnaVec256(dataBytes[_path]);
     }
 }
 

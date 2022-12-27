@@ -31,6 +31,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DnaLibTest", "Bio\Dna\DnaLi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DnaBenchmark", "Bio\Dna\DnaBenchmark\DnaBenchmark.csproj", "{0E18D4CD-09D4-42F6-A526-79A840CC149E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VectorTest", "VectorTest\VectorTest.csproj", "{1DA298B8-EF92-4290-8483-13C682DA0912}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -98,6 +100,12 @@ Global
 		{0E18D4CD-09D4-42F6-A526-79A840CC149E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{0E18D4CD-09D4-42F6-A526-79A840CC149E}.Release-x64|Any CPU.ActiveCfg = Release-x64|Any CPU
 		{0E18D4CD-09D4-42F6-A526-79A840CC149E}.Release-x64|Any CPU.Build.0 = Release-x64|Any CPU
+		{1DA298B8-EF92-4290-8483-13C682DA0912}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1DA298B8-EF92-4290-8483-13C682DA0912}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1DA298B8-EF92-4290-8483-13C682DA0912}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1DA298B8-EF92-4290-8483-13C682DA0912}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1DA298B8-EF92-4290-8483-13C682DA0912}.Release-x64|Any CPU.ActiveCfg = Debug|Any CPU
+		{1DA298B8-EF92-4290-8483-13C682DA0912}.Release-x64|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{13521187-9D55-4258-972E-F4C4FBDF6561} = {658FBBD0-E524-4C1F-A69E-63B3A8C5FBF7}
