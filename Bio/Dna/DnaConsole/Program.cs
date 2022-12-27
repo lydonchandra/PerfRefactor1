@@ -14,5 +14,5 @@ var dataBytes = Encoding.UTF8.GetBytes(data);
 // var valid = DnaUtil.ValidateDnaVec128(dataBytes.AsSpan());
 // Console.WriteLine(valid);
 
-var valid = DnaUtil.ValidateDnaVec384(dataBytes.AsSpan());
+var valid = DnaUtil.ValidateDnaVec64(dataBytes.AsSpan());
 Console.WriteLine(valid);

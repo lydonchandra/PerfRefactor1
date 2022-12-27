@@ -83,7 +83,7 @@ public class UnitTest1
         var valid = DnaUtil.ValidateDna(data);
         valid.ShouldBe(true);
 
-        valid = DnaUtil.ValidateDna(dataBytes);
+        valid = DnaUtil.ValidateDnaVec64(dataBytes);
         valid.ShouldBe(true);
 
         valid = DnaUtil.ValidateDnaVec128(dataBytes.AsSpan());

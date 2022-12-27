@@ -94,6 +94,12 @@ public class DnaBenchmark1
     }
 
     [Benchmark]
+    public bool ValidateDnaContainsAnyExcept64()
+    {
+        return DnaUtil.ValidateDnaVec64(dataBytes[_path]);
+    }
+
+    [Benchmark]
     public bool ValidateDnaContainsAnyExcept128()
     {
         return DnaUtil.ValidateDnaVec128(dataBytes[_path]);

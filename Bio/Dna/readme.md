@@ -1,3 +1,5 @@
+# There is no SIMD instruction for Vector64, it seems, which is why it is very slow.
+
 # Note: DOTNET_JitDisasm=ValidateDnaVec256, no quotes
 
 Doing the following loop unrolling is ~20% faster,

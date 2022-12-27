@@ -7,6 +7,31 @@ namespace DnaLib;
 public static class bla
 {
     [MethodImpl(MethodImplOptions.AggressiveOptimization)]
+    public static bool ContainsAnyExcept64(this ReadOnlySpan<byte> input, byte[] except)
+    {
+        unsafe
+        {
+            var exceptPtr = (byte*)except.AsMemory().Pin().Pointer;
+            Vector64<byte> vecExcept = Vector64.Load(exceptPtr);
+
+            var valid = true;
+
+            Vector64<byte> equals;
+            for (var i = 0; i < input.Length; i++)
+            {
+                Vector64<byte> vecInput = Vector64.Create(input[i]);
+                equals = Vector64.Equals(vecExcept, vecInput);
+                if (equals != Vector64<byte>.Zero) continue;
+
+                valid = false;
+                break;
+            }
+
+            return valid;
+        }
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveOptimization)]
     public static bool ContainsAnyExcept(this ReadOnlySpan<byte> input, byte[] except)
     {
         unsafe
@@ -128,6 +153,11 @@ public class DnaUtil
     public static bool ValidateDnaPad256(ReadOnlySpan<char> dnaSeq)
     {
         return dnaSeq.IndexOfAnyExcept(DnaLowerCasePad256) < 0;
+    }
+
+    public static bool ValidateDnaVec64(ReadOnlySpan<byte> dnaSeq)
+    {
+        return dnaSeq.ContainsAnyExcept64(DnaLowerCaseBytes8);
     }
 
     public static bool ValidateDnaVec128(ReadOnlySpan<byte> dnaSeq)

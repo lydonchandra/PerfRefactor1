@@ -1,0 +1,120 @@
+/home/don/RiderProjects/Refactor1/Bio/Dna/DnaConsole/bin/Release/net7.0/DnaConsole
+; Assembly listing for method DnaLib.bla:ContainsAnyExcept64(System.ReadOnlySpan`1[ubyte],<unnamed>):bool
+; Emitting BLENDED_CODE for X64 CPU with AVX - Unix
+; Tier-1 compilation
+; optimized code
+; rbp based frame
+; fully interruptible
+; No PGO data
+; 5 inlinees with PGO data; 9 single block inlinees; 2 inlinees without PGO data
+
+G_M000_IG01:                ;; offset=0000H
+       55                   push     rbp
+       4157                 push     r15
+       4156                 push     r14
+       4155                 push     r13
+       4154                 push     r12
+       53                   push     rbx
+       4883EC58             sub      rsp, 88
+       488DAC2480000000     lea      rbp, [rsp+80H]
+       33C0                 xor      eax, eax
+       488945A8             mov      qword ptr [rbp-58H], rax
+       C4413857C0           vxorps   xmm8, xmm8
+       C461797F45B0         vmovdqa  xmmword ptr [rbp-50H], xmm8
+       C461797F45C0         vmovdqa  xmmword ptr [rbp-40H], xmm8
+       488945D0             mov      qword ptr [rbp-30H], rax
+       4C8BF7               mov      r14, rdi
+       8BDE                 mov      ebx, esi
+
+G_M000_IG02:                ;; offset=0036H
+       4885D2               test     rdx, rdx
+       7471                 je       SHORT G_M000_IG06
+
+G_M000_IG03:                ;; offset=003BH
+       488BFA               mov      rdi, rdx
+       8B7708               mov      esi, dword ptr [rdi+08H]
+
+G_M000_IG04:                ;; offset=0041H
+       48897DC8             mov      gword ptr [rbp-38H], rdi
+       33FF                 xor      edi, edi
+       897DD0               mov      dword ptr [rbp-30H], edi
+       8975D4               mov      dword ptr [rbp-2CH], esi
+       488D7DC8             lea      rdi, bword ptr [rbp-38H]
+       488D75B0             lea      rsi, bword ptr [rbp-50H]
+       FF156D913300         call     [System.Memory`1[ubyte]:Pin():System.Buffers.MemoryHandle:this]
+       488B75B8             mov      rsi, qword ptr [rbp-48H]
+       4C8B3E               mov      r15, qword ptr [rsi]
+       41BC01000000         mov      r12d, 1
+       4533ED               xor      r13d, r13d
+       85DB                 test     ebx, ebx
+       0F8E7C000000         jle      G_M000_IG13
+
+G_M000_IG05:                ;; offset=0073H
+       418BF5               mov      esi, r13d
+       410FB63436           movzx    rsi, byte  ptr [r14+rsi]
+       488D7DA8             lea      rdi, bword ptr [rbp-58H]
+       FF1533FB3600         call     [System.Runtime.Intrinsics.Vector64:Create(ubyte):System.Runtime.Intrinsics.Vector64`1[ubyte]]
+       4C893C24             mov      qword ptr [rsp], r15
+       488B7DA8             mov      rdi, qword ptr [rbp-58H]
+       48897C2408           mov      qword ptr [rsp+08H], rdi
+       488D7DA0             lea      rdi, bword ptr [rbp-60H]
+       FF15141D3700         call     [System.Runtime.Intrinsics.Vector64:Equals[ubyte](System.Runtime.Intrinsics.Vector64`1[ubyte],System.Runtime.Intrinsics.Vector64`1[ubyte]):System.Runtime.Intrinsics.Vector64`1[ubyte]]
+       488B45A0             mov      rax, qword ptr [rbp-60H]
+       48894598             mov      qword ptr [rbp-68H], rax
+       33C0                 xor      eax, eax
+       48894590             mov      qword ptr [rbp-70H], rax
+       EB2F                 jmp      SHORT G_M000_IG08
+
+G_M000_IG06:                ;; offset=00ACH
+       33FF                 xor      rdi, rdi
+       33F6                 xor      esi, esi
+       EB8F                 jmp      SHORT G_M000_IG04
+       0F1F80000000000F1F8000000000 align    [14 bytes for IG07]
+
+G_M000_IG07:                ;; offset=00C0H
+       488D7D98             lea      rdi, bword ptr [rbp-68H]
+       4863F0               movsxd   rsi, eax
+       400FB63C37           movzx    rdi, byte  ptr [rdi+rsi]
+       488D5590             lea      rdx, bword ptr [rbp-70H]
+       400FB63432           movzx    rsi, byte  ptr [rdx+rsi]
+       3BFE                 cmp      edi, esi
+       7509                 jne      SHORT G_M000_IG10
+       FFC0                 inc      eax
+
+G_M000_IG08:                ;; offset=00DBH
+       83F808               cmp      eax, 8
+       7CE0                 jl       SHORT G_M000_IG07
+
+G_M000_IG09:                ;; offset=00E0H
+       EB0A                 jmp      SHORT G_M000_IG12
+
+G_M000_IG10:                ;; offset=00E2H
+       41FFC5               inc      r13d
+       443BEB               cmp      r13d, ebx
+       7C89                 jl       SHORT G_M000_IG05
+
+G_M000_IG11:                ;; offset=00EAH
+       EB03                 jmp      SHORT G_M000_IG13
+
+G_M000_IG12:                ;; offset=00ECH
+       4533E4               xor      r12d, r12d
+
+G_M000_IG13:                ;; offset=00EFH
+       418BC4               mov      eax, r12d
+
+G_M000_IG14:                ;; offset=00F2H
+       4883C458             add      rsp, 88
+       5B                   pop      rbx
+       415C                 pop      r12
+       415D                 pop      r13
+       415E                 pop      r14
+       415F                 pop      r15
+       5D                   pop      rbp
+       C3                   ret
+
+; Total bytes of code 257
+
+True
+
+Process finished with exit code 0.
+
