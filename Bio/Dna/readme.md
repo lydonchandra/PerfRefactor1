@@ -1,3 +1,34 @@
+# TLDR
+
+BenchmarkDotNet=v0.13.2, OS=ubuntu 20.04
+Intel Core i7-9700K CPU 3.60GHz (Coffee Lake), 1 CPU, 8 logical and 8 physical cores
+.NET SDK=7.0.100
+[Host]     : .NET 7.0.0 (7.0.22.51805), X64 RyuJIT AVX2
+Job-CLMXJB : .NET 7.0.0 (7.0.22.51805), X64 RyuJIT AVX2
+
+IterationCount=2 LaunchCount=1 WarmupCount=1  
+Error=NA
+
+| Method                          | dataSize |          Mean |       StdDev | Ratio | Allocated | Alloc Ratio |
+|---------------------------------|----------|--------------:|-------------:|------:|----------:|------------:|
+| ValidateDnaContainsAnyExcept384 | sm       |      17.00 us |     0.041 us |  0.99 |      80 B |        1.00 |
+| ValidateDnaContainsAnyExcept256 | sm       |      17.15 us |     0.024 us |  1.00 |      80 B |        1.00 |
+| ValidateDnaContainsAnyExcept128 | sm       |      20.28 us |     0.053 us |  1.18 |      80 B |        1.00 |
+| ValidateDnaBytePad128           | sm       |     117.94 us |     0.262 us |  6.88 |      80 B |        1.00 |
+| ValidateDnaContainsAnyExcept64  | sm       |     862.45 us |     1.142 us | 50.29 |      81 B |        1.01 |
+|                                 |          |               |              |       |           |             |
+| ValidateDnaContainsAnyExcept384 | lg       |     507.39 us |     1.331 us |  1.00 |      81 B |        1.00 |
+| ValidateDnaContainsAnyExcept256 | lg       |     509.05 us |     1.601 us |  1.00 |      81 B |        1.00 |
+| ValidateDnaContainsAnyExcept128 | lg       |     598.10 us |     0.975 us |  1.17 |      81 B |        1.00 |
+| ValidateDnaBytePad128           | lg       |   3,532.07 us |    12.810 us |  6.94 |      84 B |        1.04 |
+| ValidateDnaContainsAnyExcept64  | lg       |  25,890.63 us |    19.680 us | 50.86 |     116 B |        1.43 |
+|                                 |          |               |              |       |           |             |
+| ValidateDnaContainsAnyExcept256 | xl       |  10,517.01 us |    56.332 us |  1.00 |      98 B |        1.00 |
+| ValidateDnaContainsAnyExcept384 | xl       |  10,524.03 us |     9.299 us |  1.00 |      98 B |        1.00 |
+| ValidateDnaContainsAnyExcept128 | xl       |  12,368.53 us |    18.423 us |  1.18 |      98 B |        1.00 |
+| ValidateDnaBytePad128           | xl       |  71,250.97 us |   381.928 us |  6.78 |     245 B |        2.50 |
+| ValidateDnaContainsAnyExcept64  | xl       | 526,335.84 us | 1,820.424 us | 50.05 |    1232 B |       12.57 |
+
 # There is no SIMD instruction for Vector64, it seems, which is why it is very slow.
 
 # Note: DOTNET_JitDisasm=ValidateDnaVec256, no quotes
