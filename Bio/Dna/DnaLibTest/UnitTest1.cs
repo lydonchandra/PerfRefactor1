@@ -49,7 +49,7 @@ public class UnitTest1
         var isValid = DnaUtil.ValidateDna(dnaBytes);
         isValid.ShouldBe(true);
 
-        isValid = DnaUtil.ValidateDnaVec256(dnaBytes);
+        isValid = DnaUtil.ValidateDnaVec128(dnaBytes);
         isValid.ShouldBe(true);
     }
 
@@ -84,6 +84,9 @@ public class UnitTest1
         valid.ShouldBe(true);
 
         valid = DnaUtil.ValidateDna(dataBytes);
+        valid.ShouldBe(true);
+
+        valid = DnaUtil.ValidateDnaVec128(dataBytes.AsSpan());
         valid.ShouldBe(true);
 
         valid = DnaUtil.ValidateDnaVec256(dataBytes.AsSpan());

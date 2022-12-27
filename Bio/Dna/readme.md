@@ -1,3 +1,51 @@
+# Note: DOTNET_JitDisasm=ValidateDnaVec256, no quotes
+
+Doing the following loop unrolling is ~20% faster,
+and as expected adding another Vector128<byte>, making it 3, slow things down as it does not fit into CPU registers
+
+```
+[MethodImpl(MethodImplOptions.AggressiveOptimization)]
+public static bool ContainsAnyExcept256(this ReadOnlySpan<byte> input, byte[] except)
+{
+unsafe
+{
+var exceptPtr = (byte*)except.AsMemory().Pin().Pointer;
+Vector128<byte> vecExcept = Vector128.Load(exceptPtr);
+
+            var valid = true;
+
+            Vector128<byte> equals;
+            Vector128<byte> equals2;
+            for (var i = 0; i < input.Length - 1; i += 2)
+            {
+                Vector128<byte> vecInput0 = Vector128.Create(input[i]);
+                Vector128<byte> vecInput1 = Vector128.Create(input[i + 1]);
+                // Vector256<byte> vecInput = Vector256.Create(Vector128.Create(input[i]), Vector128.Create(input[i + 1]));
+                equals = Vector128.Equals(vecExcept, vecInput0);
+                equals2 = Vector128.Equals(vecExcept, vecInput1);
+                if (equals != Vector128<byte>.Zero && equals2 != Vector128<byte>.Zero) continue;
+
+                valid = false;
+                break;
+            }
+
+            return valid;
+        }
+    }
+```    
+
+| Method                          | dataSize |         Mean |    StdDev | Allocated |
+|---------------------------------|----------|-------------:|----------:|----------:|
+| ValidateDnaContainsAnyExcept256 | sm       |     16.96 us |  0.067 us |      80 B |
+| ValidateDnaContainsAnyExcept128 | sm       |     19.90 us |  0.082 us |      80 B |
+| ValidateDnaBytePad128           | sm       |    117.31 us |  0.320 us |      80 B |
+| ValidateDnaContainsAnyExcept256 | lg       |    502.64 us |  0.294 us |      81 B |
+| ValidateDnaContainsAnyExcept128 | lg       |    590.56 us |  1.575 us |      81 B |
+| ValidateDnaBytePad128           | lg       |  3,503.59 us | 16.048 us |      84 B |
+| ValidateDnaContainsAnyExcept256 | xl       | 10,450.72 us | 10.798 us |      98 B |
+| ValidateDnaContainsAnyExcept128 | xl       | 12,142.86 us | 63.175 us |      98 B |
+| ValidateDnaBytePad128           | xl       | 70,178.76 us | 94.641 us |     245 B |
+
 ## Linux-Arm64 RaspberryPi4B
 
 | Method                |     Mean |   StdDev | Ratio | Allocated | Alloc Ratio |
@@ -39,3 +87,5 @@ IterationCount=3 LaunchCount=2 WarmupCount=2
 
 * adding `[MethodImpl(MethodImplOptions.AggressiveInlining)]` into `ValidateDnaPad256` has no measurable effect.
 * Making the buffer larger, to 2MB, slow things down, for very small input, as expected
+
+
