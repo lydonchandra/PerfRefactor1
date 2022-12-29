@@ -6,6 +6,15 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <Configurations>Debug;Release;Release-x64</Configurations>
+        <Platforms>AnyCPU</Platforms>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release-x64' ">
+      <Optimize>true</Optimize>
+      <PlatformTarget>x64</PlatformTarget>
+      <DefineConstants />
+      <DebugType>pdbonly</DebugType>
     </PropertyGroup>
 
 </Project>

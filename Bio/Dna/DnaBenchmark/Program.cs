@@ -11,7 +11,8 @@ using DnaLib;
 var config = DefaultConfig.Instance.With(ConfigOptions.DisableOptimizationsValidator);
 config.AddColumn(new TagColumn("FileSize", s => "20MB"));
 
-var summary = BenchmarkRunner.Run<DnaBenchmark1>(config);
+var summary = BenchmarkRunner.Run<Vector1Benchmark>(config);
+// var summary = BenchmarkRunner.Run<DnaBenchmark1>(config);
 // var summary2 = BenchmarkRunner.Run<DnaBenchmarkReadFile>(config);
 
 public enum DataSize
@@ -144,5 +145,55 @@ public class DnaBenchmarkReadFile
     public async Task<bool> ValidateDnaFromFileAsByte()
     {
         return await DnaUtil.ValidateDnaFromFileAsByte(_path);
+    }
+}
+
+
+[MemoryDiagnoser]
+[HideColumns("Error", "RatioSD")]
+[SimpleJob(1, 1, 2)]
+[Orderer(SummaryOrderPolicy.FastestToSlowest)]
+public class Vector1Benchmark
+{
+    [Params(DataSize.lg)] public DataSize dataSize;
+
+    public int[] data { get; set; }
+
+    private string _path => "Data/sorted-int-array-" + dataSize + ".json";
+
+    [GlobalSetup]
+    public void SetupData()
+    {
+        DataSize[] dataSizes = { DataSize.sm, DataSize.lg, DataSize.xl };
+        foreach (var size in dataSizes)
+        {
+            // var path = "Data/gene-" + size + ".fna";
+            // using FileStream fileStream = new(_path, FileMode.Open, FileAccess.Read);
+            // using var streamReader = new StreamReader(fileStream);
+            // var content = JsonSerializer.Deserialize<ExpandoObject>(streamReader.ReadToEnd());
+            //data.Add(_path, content!.First().Value);
+            // dataBytes.Add(_path, Encoding.UTF8.GetBytes(content));
+        }
+
+        data = Enumerable.Range(0, 10_000_000).ToArray();
+    }
+
+
+    [Benchmark(Baseline = true)]
+    public bool IsSorted()
+    {
+        return VectorUtil.IsSorted(data);
+    }
+
+    [Benchmark]
+    public bool IsSortedSse()
+    {
+        return VectorUtil.IsSorted_Sse41(data);
+    }
+
+    [Benchmark]
+    public bool IsSortedVector256()
+    {
+        return VectorUtil.IsSorted_Vector256(data);
     }
 }

@@ -136,11 +136,13 @@ public class DnaUtil
     private static readonly byte[] DnaLowerCaseBytesPad128 = "acgtACGT\nacgtACG"u8.ToArray();
 
 
+    [MethodImpl(MethodImplOptions.AggressiveOptimization)]
     public static bool ValidateDna(ReadOnlySpan<char> dnaSeq)
     {
         return dnaSeq.IndexOfAnyExcept(DnaLowerCase) < 0;
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveOptimization)]
     public static bool ValidateDnaNaive(ReadOnlySpan<char> dnaSeq)
     {
         for (var i = 0; i < dnaSeq.Length; i++)
@@ -150,41 +152,49 @@ public class DnaUtil
         return true;
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveOptimization)]
     public static bool ValidateDnaPad256(ReadOnlySpan<char> dnaSeq)
     {
         return dnaSeq.IndexOfAnyExcept(DnaLowerCasePad256) < 0;
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveOptimization)]
     public static bool ValidateDnaVec64(ReadOnlySpan<byte> dnaSeq)
     {
         return dnaSeq.ContainsAnyExcept64(DnaLowerCaseBytes8);
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveOptimization)]
     public static bool ValidateDnaVec128(ReadOnlySpan<byte> dnaSeq)
     {
         return dnaSeq.ContainsAnyExcept(DnaLowerCaseBytes8);
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveOptimization)]
     public static bool ValidateDnaVec256(ReadOnlySpan<byte> dnaSeq)
     {
         return dnaSeq.ContainsAnyExcept256(DnaLowerCaseBytes8);
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveOptimization)]
     public static bool ValidateDnaVec384(ReadOnlySpan<byte> dnaSeq)
     {
         return dnaSeq.ContainsAnyExcept384(DnaLowerCaseBytes8);
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveOptimization)]
     public static bool ValidateDna(ReadOnlySpan<byte> dnaSeq)
     {
         return dnaSeq.IndexOfAnyExcept(DnaLowerCaseBytes) < 0;
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveOptimization)]
     public static bool ValidateDnaPad128(ReadOnlySpan<byte> dnaSeq)
     {
         return dnaSeq.IndexOfAnyExcept(DnaLowerCaseBytesPad128) < 0;
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveOptimization)]
     public static async Task<bool> ValidateDnaFromFileAsChar(string path)
     {
         FileStream fs = new(path, FileMode.Open, FileAccess.Read);
@@ -204,6 +214,7 @@ public class DnaUtil
         return true;
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveOptimization)]
     public static async Task<bool> ValidateDnaFromFileAsByte(string path)
     {
         FileStream fs = new(path, FileMode.Open, FileAccess.Read);
