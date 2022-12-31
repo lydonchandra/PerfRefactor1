@@ -53,10 +53,6 @@
         <Link>Data\gene-xl.fna</Link>
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </Content>
-      <Content Include="..\Data\sorted-int-array-lg.json">
-        <Link>Data\sorted-int-array-lg.json</Link>
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
     </ItemGroup>
 
 </Project>

@@ -11,8 +11,8 @@ using DnaLib;
 var config = DefaultConfig.Instance.With(ConfigOptions.DisableOptimizationsValidator);
 config.AddColumn(new TagColumn("FileSize", s => "20MB"));
 
-var summary = BenchmarkRunner.Run<Vector1Benchmark>(config);
-// var summary = BenchmarkRunner.Run<DnaBenchmark1>(config);
+// var summary = BenchmarkRunner.Run<Vector1Benchmark>(config);
+var summary = BenchmarkRunner.Run<DnaBenchmark1>(config);
 // var summary2 = BenchmarkRunner.Run<DnaBenchmarkReadFile>(config);
 
 public enum DataSize
@@ -117,6 +117,12 @@ public class DnaBenchmark1
     {
         return DnaUtil.ValidateDnaVec384(dataBytes[_path]);
     }
+
+    [Benchmark]
+    public bool ValidateDnaContainsAnyExcept768()
+    {
+        return DnaUtil.ValidateDnaVec384(dataBytes[_path]);
+    }
 }
 
 [MemoryDiagnoser]
@@ -157,7 +163,7 @@ public class Vector1Benchmark
 {
     [Params(DataSize.lg)] public DataSize dataSize;
 
-    public int[] data { get; set; }
+    public int[] data { get; set; } = Enumerable.Range(0, 10_000_000).ToArray();
 
     private string _path => "Data/sorted-int-array-" + dataSize + ".json";
 
@@ -174,8 +180,6 @@ public class Vector1Benchmark
             //data.Add(_path, content!.First().Value);
             // dataBytes.Add(_path, Encoding.UTF8.GetBytes(content));
         }
-
-        data = Enumerable.Range(0, 10_000_000).ToArray();
     }
 
 

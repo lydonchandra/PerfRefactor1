@@ -23,7 +23,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Dna", "Dna", "{D0027417-3871-49E9-BC23-78D5C10C6011}"
 	ProjectSection(SolutionItems) = preProject
 		Bio\Dna\readme.md = Bio\Dna\readme.md
-		Bio\Dna\Data\sorted-int-array-lg.json = Bio\Dna\Data\sorted-int-array-lg.json
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DnaLib", "Bio\Dna\DnaLib\DnaLib.csproj", "{2987A89A-E2DD-44FA-AF4E-A721EFEF91D0}"
@@ -107,8 +106,8 @@ Global
 		{1DA298B8-EF92-4290-8483-13C682DA0912}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1DA298B8-EF92-4290-8483-13C682DA0912}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1DA298B8-EF92-4290-8483-13C682DA0912}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1DA298B8-EF92-4290-8483-13C682DA0912}.Release-x64|Any CPU.ActiveCfg = Release-x64|Any CPU
-		{1DA298B8-EF92-4290-8483-13C682DA0912}.Release-x64|Any CPU.Build.0 = Release-x64|Any CPU
+		{1DA298B8-EF92-4290-8483-13C682DA0912}.Release-x64|Any CPU.ActiveCfg = Debug|Any CPU
+		{1DA298B8-EF92-4290-8483-13C682DA0912}.Release-x64|Any CPU.Build.0 = Debug|Any CPU
 		{A78A9638-688D-4AD1-8409-BD6FEF40B2D6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A78A9638-688D-4AD1-8409-BD6FEF40B2D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A78A9638-688D-4AD1-8409-BD6FEF40B2D6}.Release|Any CPU.ActiveCfg = Release|Any CPU

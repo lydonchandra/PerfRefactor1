@@ -1,4 +1,28 @@
-# TLDR
+# TLDR arm64
+
+arm64 has Vector64, so `ValidateDnaContainsAnyExcept64` runs on par with the other vectorized methods.
+
+| Method                          | dataSize |         Mean |    StdDev | Ratio | Allocated | Alloc Ratio |
+|---------------------------------|----------|-------------:|----------:|------:|----------:|------------:|
+| ValidateDnaContainsAnyExcept384 | sm       |     102.9 us |   0.07 us |  0.92 |      80 B |        1.00 |
+| ValidateDnaContainsAnyExcept256 | sm       |     112.1 us |   0.11 us |  1.00 |      80 B |        1.00 |
+| ValidateDnaContainsAnyExcept64  | sm       |     129.5 us |   0.49 us |  1.16 |      80 B |        1.00 |
+| ValidateDnaContainsAnyExcept128 | sm       |     133.1 us |   0.18 us |  1.19 |      80 B |        1.00 |
+| ValidateDnaBytePad128           | sm       |     306.1 us |  13.17 us |  2.73 |      81 B |        1.01 |
+|                                 |          |              |           |       |           |             |
+| ValidateDnaContainsAnyExcept384 | lg       |   3,060.7 us |   0.74 us |  0.91 |      84 B |        1.00 |
+| ValidateDnaContainsAnyExcept256 | lg       |   3,378.7 us |   2.13 us |  1.00 |      84 B |        1.00 |
+| ValidateDnaContainsAnyExcept64  | lg       |   3,746.1 us |  10.65 us |  1.11 |      84 B |        1.00 |
+| ValidateDnaContainsAnyExcept128 | lg       |   3,906.8 us |  96.38 us |  1.16 |      89 B |        1.06 |
+| ValidateDnaBytePad128           | lg       |   8,679.4 us |  10.30 us |  2.57 |      98 B |        1.17 |
+|                                 |          |              |           |       |           |             |
+| ValidateDnaContainsAnyExcept384 | xl       |  61,017.6 us |  16.25 us |  0.90 |     208 B |        0.93 |
+| ValidateDnaContainsAnyExcept256 | xl       |  67,790.2 us | 642.52 us |  1.00 |     224 B |        1.00 |
+| ValidateDnaContainsAnyExcept64  | xl       |  74,751.6 us |  60.58 us |  1.10 |     245 B |        1.09 |
+| ValidateDnaContainsAnyExcept128 | xl       |  76,254.2 us | 299.19 us |  1.12 |     245 B |        1.09 |
+| ValidateDnaBytePad128           | xl       | 173,407.6 us |  91.71 us |  2.56 |     464 B |        2.07 |
+
+# TLDR x64
 
 BenchmarkDotNet=v0.13.2, OS=ubuntu 20.04
 Intel Core i7-9700K CPU 3.60GHz (Coffee Lake), 1 CPU, 8 logical and 8 physical cores
@@ -29,7 +53,25 @@ Error=NA
 | ValidateDnaBytePad128           | xl       |  71,250.97 us |   381.928 us |  6.78 |     245 B |        2.50 |
 | ValidateDnaContainsAnyExcept64  | xl       | 526,335.84 us | 1,820.424 us | 50.05 |    1232 B |       12.57 |
 
-# There is no SIMD instruction for Vector64, it seems, which is why it is very slow.
+## There is no SIMD instruction for Vector64, it seems, which is why it is very slow.
+
+eg `calling System.Runtime.Intrinsics.Vector64:Equals[ubyte]`
+
+```
+G_M000_IG05:                ;; offset=0073H
+418BF5               mov      esi, r13d
+410FB63436           movzx    rsi, byte  ptr [r14+rsi]
+488D7DA8             lea      rdi, bword ptr [rbp-58H]
+FF15C3153700         call     [System.Runtime.Intrinsics.Vector64:Create(ubyte):System.Runtime.Intrinsics.Vector64`1[ubyte]]
+4C893C24             mov      qword ptr [rsp], r15
+488B7DA8             mov      rdi, qword ptr [rbp-58H]
+48897C2408           mov      qword ptr [rsp+08H], rdi
+488D7DA0             lea      rdi, bword ptr [rbp-60H]
+FF1594353700         call     [System.Runtime.Intrinsics.Vector64:Equals[ubyte](System.Runtime.Intrinsics.Vector64`1[ubyte],System.Runtime.Intrinsics.Vector64`1[ubyte]):System.Runtime.Intrinsics.Vector64`1[ubyte]]
+
+```
+
+# Arm neon arrangement (128bits) specifier: can be one of 8B, 16B, 4H, 8H, 2S, 4S or 2D.
 
 # Note: DOTNET_JitDisasm=ValidateDnaVec256, no quotes
 

@@ -1,0 +1,11 @@
+{
+  "$schema": "http://json.schemastore.org/launchsettings.json",
+  "profiles": {
+    "DnaConsole": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "DOTNET_JitDisasm": "ContainsAnyExcept768"
+      }
+    }
+  }
+}

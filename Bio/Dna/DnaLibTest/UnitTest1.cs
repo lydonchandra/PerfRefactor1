@@ -18,18 +18,6 @@ public class UnitTest1
     }
 
     [Fact]
-    public void TestReadJson()
-    {
-        // var _path = "Data/sorted-int-array-" + "lg" + ".json";
-        // using FileStream fileStream = new(_path, FileMode.Open, FileAccess.Read);
-        // using var streamReader = new StreamReader(fileStream);
-        // var json = streamReader.ReadToEnd();
-        // var content = JsonSerializer.Deserialize<ValueClass>(json);
-        // var intArr = content.value;
-        // intArr.ShouldNotBeNull();
-    }
-
-    [Fact]
     public void TestValidateChar()
     {
         var dna = "ACGTATTAACGTATTAACGTATTAACGTATTAACGTATTAACGTATTAACGTATTA";
@@ -103,10 +91,11 @@ public class UnitTest1
 
         valid = DnaUtil.ValidateDnaVec256(dataBytes.AsSpan());
         valid.ShouldBe(true);
-    }
 
-    public class ValueClass
-    {
-        public int[] value;
+        valid = DnaUtil.ValidateDnaVec384(dataBytes.AsSpan());
+        valid.ShouldBe(true);
+
+        valid = DnaUtil.ValidateDnaVec768(dataBytes.AsSpan());
+        valid.ShouldBe(true);
     }
 }

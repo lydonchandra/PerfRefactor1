@@ -121,6 +121,48 @@ public static class bla
             return valid;
         }
     }
+
+    [MethodImpl(MethodImplOptions.AggressiveOptimization)]
+    public static bool ContainsAnyExcept768(this ReadOnlySpan<byte> input, byte[] except)
+    {
+        unsafe
+        {
+            var exceptPtr = (byte*)except.AsMemory().Pin().Pointer;
+            Vector128<byte> vecExcept = Vector128.Load(exceptPtr);
+
+            var valid = true;
+
+            Vector128<byte> equals0;
+            Vector128<byte> equals1;
+            Vector128<byte> equals2;
+            Vector128<byte> equals3;
+            Vector128<byte> equals4;
+            Vector128<byte> equals5;
+            for (var i = 0; i < input.Length - 6; i += 6)
+            {
+                Vector128<byte> vecInput0 = Vector128.Create(input[i]);
+                Vector128<byte> vecInput1 = Vector128.Create(input[i + 1]);
+                Vector128<byte> vecInput2 = Vector128.Create(input[i + 2]);
+                Vector128<byte> vecInput3 = Vector128.Create(input[i + 3]);
+                Vector128<byte> vecInput4 = Vector128.Create(input[i + 4]);
+                Vector128<byte> vecInput5 = Vector128.Create(input[i + 5]);
+                equals0 = Vector128.Equals(vecExcept, vecInput0);
+                equals1 = Vector128.Equals(vecExcept, vecInput1);
+                equals2 = Vector128.Equals(vecExcept, vecInput2);
+                equals3 = Vector128.Equals(vecExcept, vecInput3);
+                equals4 = Vector128.Equals(vecExcept, vecInput4);
+                equals5 = Vector128.Equals(vecExcept, vecInput5);
+                if (equals0 != Vector128<byte>.Zero && equals1 != Vector128<byte>.Zero &&
+                    equals2 != Vector128<byte>.Zero && equals3 != Vector128<byte>.Zero &&
+                    equals4 != Vector128<byte>.Zero && equals5 != Vector128<byte>.Zero) continue;
+
+                valid = false;
+                break;
+            }
+
+            return valid;
+        }
+    }
 }
 
 public class DnaUtil
@@ -180,6 +222,12 @@ public class DnaUtil
     public static bool ValidateDnaVec384(ReadOnlySpan<byte> dnaSeq)
     {
         return dnaSeq.ContainsAnyExcept384(DnaLowerCaseBytes8);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveOptimization)]
+    public static bool ValidateDnaVec768(ReadOnlySpan<byte> dnaSeq)
+    {
+        return dnaSeq.ContainsAnyExcept768(DnaLowerCaseBytes8);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveOptimization)]

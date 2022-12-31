@@ -1,139 +1,27 @@
-﻿using System.Dynamic;
-using System.Numerics;
-using System.Runtime.CompilerServices;
-using System.Runtime.Intrinsics;
+﻿using System.Runtime.Intrinsics;
 using System.Runtime.Intrinsics.X86;
 using System.Text.Json;
 
-var start = (int)DateTime.Now.Ticks % 100;
-var length = start;
-var arr2 = Enumerable.Range(0, 10_000_000).ToArray();
-var obj = new ExpandoObject();
-obj.TryAdd("value", arr2);
-using var sw = new StreamWriter(File.OpenWrite("/home/don/bla1.json"));
-sw.Write(JsonSerializer.Serialize(obj));
-sw.Flush();
-sw.Close();
+const int start = 20;
+const int length = 32;
+var arr1 = Enumerable.Range(start, start + length).ToArray();
 
-char[] arr1 = { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' };
-// Util.TestUint1(arr1);
-Util.IsSorted(new[] { 5, 6, 4, 3, 4, 7 });
-Util.IsSorted_Sse41(new[] { 5, 6, 4, 3, 4, 7 });
-Console.WriteLine(Vector<byte>.Count + " " + Vector256<byte>.Count);
-// Util.TestShuffle(arr1);
-
+Util.TestShuffle(arr1);
 
 public static class Util
 {
-    [MethodImpl(MethodImplOptions.AggressiveOptimization)]
-    public static bool IsSorted(int[] array)
-    {
-        if (array.Length < 2) return true;
-
-        for (var i = 0; i < array.Length; i++)
-            if (array[i] > array[i + 1])
-                return false;
-
-        return true;
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveOptimization)]
-    public static bool IsSorted_Sse41(int[] array)
-    {
-        unsafe
-        {
-            fixed (int* ptr = &array[0])
-            {
-                for (var i = 0; i < array.Length - 4; i += 4)
-                {
-                    Vector128<int> curr = Sse2.LoadVector128(ptr + i);
-                    Vector128<int> next = Sse2.LoadVector128(ptr + i + 1);
-                    Vector128<int> mask = Sse2.CompareGreaterThan(curr, next);
-                    if (!Sse41.TestZ(mask, mask))
-                        return false;
-                }
-            }
-
-            return true;
-        }
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveOptimization)]
-    public static bool IsSorted_Vector256(int[] array)
-    {
-        unsafe
-        {
-            fixed (int* ptr = &array[0])
-            {
-                for (var i = 0; i < array.Length - 8; i += 8)
-                {
-                    Vector256<int> curr = Vector256.Load(ptr + i);
-                    Vector256<int> next = Vector256.Load(ptr + i + 1);
-                    Vector256<int> mask = Avx2.CompareGreaterThan(curr, next);
-                    if (Avx.TestZ(mask, mask))
-                        return false;
-                }
-            }
-
-            return true;
-        }
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveOptimization)]
-    public static void TestUint1(char[] array)
-    {
-        // if ((uint)array.Length > 5)
-        // {
-        //     array[0] = 'F';
-        //     array[1] = 'a';
-        //     array[2] = 'l';
-        //     array[3] = 's';
-        //     array[4] = 'e';
-        //     array[5] = '.';
-        // }
-
-        if (array.Length > 5)
-        {
-            array[0] = 'F';
-            array[1] = 'a';
-            array[2] = 'l';
-            array[3] = 's';
-            array[4] = 'e';
-            array[5] = '.';
-        }
-    }
-
-    public static void TestForLoopSignedInt(char[] array)
-    {
-        for (var i = 0; i < array.Length - 2; i += 2)
-        {
-            array[i] = 'F';
-            array[i + 1] = 'a';
-        }
-    }
-
-    public static void TestForLoopUnsignedInt(char[] array)
-    {
-        if ((uint)array.Length < 8) return;
-        for (uint i = 0; i < (uint)array.Length - 2; i += 2)
-        {
-            array[i] = 'F';
-            array[i + 1] = 'a';
-        }
-    }
-
     public static bool TestShuffle(int[] arr1)
     {
         unsafe
         {
             var arr1LeftPtr = (int*)arr1.AsMemory().Pin().Pointer;
             // var arr1RightPtr = arr1LeftPtr + arr1.Length - Vector128<int>.Count;
-            Vector128<int> left = Sse2.LoadVector128(arr1LeftPtr); // left:  23, 22, 21, 20
+            Vector128<int> left = Sse2.LoadVector128(arr1LeftPtr);
             // Vector128<int> right = Sse2.LoadVector128(arr1RightPtr);
 
             // 0x1b == 27 == 00 01 10 11 == 0 1 2 3
             // 0x1e == 30 == 00 01 11 10 == 0 1 3 2
-            Vector128<int> reversedLeft = Sse2.Shuffle(left, 0b00_01_10_11); // reversed: 20, 21, 22, 23
+            Vector128<int> reversedLeft = Sse2.Shuffle(left, 0b00_01_10_11);
             Sse2.Store(arr1LeftPtr, reversedLeft);
             return true;
             // Vector128<int> reversedRight = Sse2.Shuffle(right, 0b00_01_10_11);
