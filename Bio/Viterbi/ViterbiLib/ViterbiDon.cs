@@ -39,35 +39,43 @@ public class ViterbiDon
             [HealthState.Fever] = 0.4
         };
 
-        Dictionary<HealthState, Dictionary<HealthState, double>> transitionProbability = new();
-        Dictionary<HealthState, double> transition1 = new()
+        Dictionary<HealthState, Dictionary<HealthState, double>> transitionProbability = new()
         {
-            [HealthState.Healthy] = 0.7,
-            [HealthState.Fever] = 0.3
+            {
+                HealthState.Healthy, new Dictionary<HealthState, double>
+                {
+                    [HealthState.Healthy] = 0.7,
+                    [HealthState.Fever] = 0.3
+                }
+            },
+            {
+                HealthState.Fever, new Dictionary<HealthState, double>
+                {
+                    [HealthState.Healthy] = 0.4,
+                    [HealthState.Fever] = 0.6
+                }
+            }
         };
-        Dictionary<HealthState, double> transition2 = new()
-        {
-            [HealthState.Healthy] = 0.4,
-            [HealthState.Fever] = 0.6
-        };
-        transitionProbability[HealthState.Healthy] = transition1;
-        transitionProbability[HealthState.Fever] = transition2;
 
-        Dictionary<HealthState, Dictionary<Observation, double>> emissionProbability = new();
-        Dictionary<Observation, double> emission1 = new()
+        Dictionary<HealthState, Dictionary<Observation, double>> emissionProbability = new()
         {
-            [Observation.Dizzy] = 0.1,
-            [Observation.Cold] = 0.4,
-            [Observation.Normal] = 0.5
+            {
+                HealthState.Healthy, new Dictionary<Observation, double>
+                {
+                    [Observation.Dizzy] = 0.1,
+                    [Observation.Cold] = 0.4,
+                    [Observation.Normal] = 0.5
+                }
+            },
+            {
+                HealthState.Fever, new Dictionary<Observation, double>
+                {
+                    [Observation.Dizzy] = 0.6,
+                    [Observation.Cold] = 0.3,
+                    [Observation.Normal] = 0.1
+                }
+            }
         };
-        Dictionary<Observation, double> emission2 = new()
-        {
-            [Observation.Dizzy] = 0.6,
-            [Observation.Cold] = 0.3,
-            [Observation.Normal] = 0.1
-        };
-        emissionProbability[HealthState.Healthy] = emission1;
-        emissionProbability[HealthState.Fever] = emission2;
 
         var output = ForwardViterbi(observations, startProbability, transitionProbability, emissionProbability);
         return output;
@@ -92,7 +100,7 @@ public class ViterbiDon
                 HealthState[] argmax = Array.Empty<HealthState>();
                 double valmax = 0;
 
-                double prob = 1;
+                double prob;
                 HealthState[] vPath = Array.Empty<HealthState>();
                 double vProb = 1;
 
