@@ -40,3 +40,5 @@
 /Bio/Dna/DnaCpp/cmake-build-debug
 /Bio/Dna/DnaConsole/bin
 /Bio/Dna/DnaConsole/obj
+**/bin/
+**/obj

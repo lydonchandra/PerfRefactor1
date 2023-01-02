@@ -32,7 +32,6 @@ public class ViterbiDon
     {
         // Observation[] observations1 =
         //     { Observation.Dizzy, Observation.Cold, Observation.Normal, Observation.Dizzy };
-
         Dictionary<HealthState, double> startProbability = new()
         {
             [HealthState.Healthy] = 0.6,
@@ -87,14 +86,15 @@ public class ViterbiDon
         Dictionary<HealthState, Dictionary<HealthState, double>> transitionProbability,
         Dictionary<HealthState, Dictionary<Observation, double>> emissionProbability)
     {
-        Dictionary<HealthState, object[]> t = new();
-        foreach (var state in Enum.GetValues<HealthState>())
-            t.Add(state, new object[] { startProbability[state], new[] { state }, startProbability[state] });
+        HealthState[] states = Enum.GetValues<HealthState>();
+        Dictionary<HealthState, object[]> viterbi = new();
+        foreach (var state in states)
+            viterbi.Add(state, new object[] { startProbability[state], new[] { state }, startProbability[state] });
 
         foreach (var observation in observations)
         {
-            Dictionary<HealthState, object[]> u = new();
-            foreach (var nextState in Enum.GetValues<HealthState>())
+            Dictionary<HealthState, object[]> viterbiInner = new();
+            foreach (var nextState in states)
             {
                 double total = 0;
                 HealthState[] argmax = Array.Empty<HealthState>();
@@ -104,9 +104,9 @@ public class ViterbiDon
                 HealthState[] vPath = Array.Empty<HealthState>();
                 double vProb = 1;
 
-                foreach (var sourceState in Enum.GetValues<HealthState>())
+                foreach (var sourceState in states)
                 {
-                    var objs = t[sourceState];
+                    var objs = viterbi[sourceState];
                     prob = (double)objs[0];
                     vPath = (HealthState[])objs[1];
                     vProb = (double)objs[2];
@@ -124,10 +124,10 @@ public class ViterbiDon
                     }
                 }
 
-                u.Add(nextState, new object[] { total, argmax, valmax });
+                viterbiInner.Add(nextState, new object[] { total, argmax, valmax });
             }
 
-            t = u;
+            viterbi = viterbiInner;
         }
 
         double xTotal = 0;
@@ -138,9 +138,9 @@ public class ViterbiDon
         HealthState[] xvPath = Array.Empty<HealthState>();
         double xvProb;
 
-        foreach (var healthState in Enum.GetValues<HealthState>())
+        foreach (var healthState in states)
         {
-            var objs = t[healthState];
+            var objs = viterbi[healthState];
             xProb = (double)objs[0];
             xvPath = (HealthState[])objs[1];
             xvProb = (double)objs[2];
