@@ -1,3 +1,16 @@
+# Protein compression
+
+IterationCount=2 LaunchCount=1 WarmupCount=1  
+Error=NA
+
+| Method        | dataSize |       Mean |     StdDev | Ratio |    Gen0 |    Gen1 |    Gen2 | Allocated | Alloc Ratio |
+|---------------|----------|-----------:|-----------:|------:|--------:|--------:|--------:|----------:|------------:|
+| CompressSimd1 | sm       |   4.899 us |  0.0311 us |  0.60 |  1.1292 |  0.6714 |       - |   5.13 KB |        1.01 |
+| Compress      | sm       |   8.229 us |  0.0035 us |  1.00 |  0.8240 |  0.0153 |       - |   5.08 KB |        1.00 |
+|               |          |            |            |       |         |         |         |           |             |
+| CompressSimd1 | md       | 210.127 us | 34.1023 us |  0.63 | 62.2559 | 62.2559 | 62.2559 | 203.95 KB |        1.00 |
+| Compress      | md       | 333.931 us |  0.4218 us |  1.00 | 62.0117 | 62.0117 | 62.0117 |  203.9 KB |        1.00 |
+
 # TLDR arm64
 
 arm64 has Vector64, so `ValidateDnaContainsAnyExcept64` runs on par with the other vectorized methods.

@@ -7,13 +7,15 @@ using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Order;
 using BenchmarkDotNet.Running;
 using DnaLib;
+using static DnaLib.bla;
 
 var config = DefaultConfig.Instance.With(ConfigOptions.DisableOptimizationsValidator);
 config.AddColumn(new TagColumn("FileSize", s => "20MB"));
 
 // var summary = BenchmarkRunner.Run<Vector1Benchmark>(config);
-var summary = BenchmarkRunner.Run<DnaBenchmark1>(config);
+// var summary = BenchmarkRunner.Run<DnaBenchmark1>(config);
 // var summary2 = BenchmarkRunner.Run<DnaBenchmarkReadFile>(config);
+var summary2 = BenchmarkRunner.Run<ProteinCompressBenchmark>(config);
 
 public enum DataSize
 {
@@ -199,5 +201,40 @@ public class Vector1Benchmark
     public bool IsSortedVector256()
     {
         return VectorUtil.IsSorted_Vector256(data);
+    }
+}
+
+
+[MemoryDiagnoser]
+[HideColumns("Error", "RatioSD")]
+[SimpleJob(1, 1, 2)]
+[Orderer(SummaryOrderPolicy.FastestToSlowest)]
+public class ProteinCompressBenchmark
+{
+    public Dictionary<string, byte[]> dataBytes = new();
+    [Params(DataSize.sm, DataSize.md)] public DataSize dataSize;
+
+    private string _path => "Data/protein-" + dataSize + ".fasta";
+
+    [GlobalSetup]
+    public void SetupData()
+    {
+        using FileStream fileStream = new(_path, FileMode.Open, FileAccess.Read);
+        using var streamReader = new StreamReader(fileStream);
+        var content = streamReader.ReadToEnd();
+        dataBytes.Add(_path, Encoding.UTF8.GetBytes(content));
+    }
+
+
+    [Benchmark]
+    public byte[] CompressSimd1()
+    {
+        return CompressSimd(dataBytes[_path]);
+    }
+
+    [Benchmark(Baseline = true)]
+    public byte[] Compress()
+    {
+        return bla.Compress(dataBytes[_path]);
     }
 }

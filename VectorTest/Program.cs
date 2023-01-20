@@ -1,4 +1,5 @@
-﻿using System.Runtime.Intrinsics;
+﻿using System.Numerics;
+using System.Runtime.Intrinsics;
 using System.Runtime.Intrinsics.X86;
 using System.Text.Json;
 
@@ -6,10 +7,60 @@ const int start = 20;
 const int length = 32;
 var arr1 = Enumerable.Range(start, start + length).ToArray();
 
-Util.TestShuffle(arr1);
+// Util.TestShuffle(arr1);
+// void* dnaLowerCaseBytes = "ARNDCQEGHILKMFPSTWYXJOUBZ-._;;;;"u8.ToArray().AsMemory().Pin().Pointer;
+//
+// Vector256<byte> vecInput0 = Vector256.Load((byte*)dnaLowerCaseBytes);
+// var value = (byte)'M';
+// Vector256<byte> vecCompare0 = Vector256.Create(value);
+// Vector256<byte> result = Vector256.Equals(vecInput0, vecCompare0);
+// Vector128<byte> lower = result.GetLower();
+//
+// // Compare bytes for equality, equal = 0xFF = 255, not equal = 0
+// Vector256<byte> eq = Avx2.CompareEqual(vecInput0, vecCompare0);
+// // Move comparison results into a bitmap of 32 bits
+// var bmp = unchecked((uint)Avx2.MoveMask(eq));
+// // Find index of the first byte in the vectors which compared equal
+// // The method will return 32 if none of the bytes compared equal
+// var firstEqualIndex = BitOperations.TrailingZeroCount(bmp);
+
+ReadOnlySpan<byte> proteinSeq = "MLDPTGTYRRPRDTQDSRQKRRQDCLDPTGQY"u8;
+var compressedProteinSeq = Util.Compress(proteinSeq);
+compressedProteinSeq.ToString();
 
 public static class Util
 {
+    public static byte[] Compress(ReadOnlySpan<byte> proteinSeq)
+    {
+        unsafe
+        {
+            var results = new byte[proteinSeq.Length];
+            void* proteinLut = "ARNDCQEGHILKMFPSTWYXJOUBZ-._;;;;"u8.ToArray().AsMemory().Pin().Pointer;
+
+            Vector256<byte> vecInput0 = Vector256.Load((byte*)proteinLut);
+
+            for (var index = 0; index < proteinSeq.Length; index++)
+            {
+                var protAa = proteinSeq[index];
+                // var value = (byte)'M';
+                var value = protAa;
+                Vector256<byte> vecCompare0 = Vector256.Create(value);
+                Vector256<byte> result = Vector256.Equals(vecInput0, vecCompare0);
+
+                // Compare bytes for equality, equal = 0xFF = 255, not equal = 0
+                Vector256<byte> eq = Avx2.CompareEqual(vecInput0, vecCompare0);
+                // Move comparison results into a bitmap of 32 bits
+                var bmp = unchecked((uint)Avx2.MoveMask(eq));
+                // Find index of the first byte in the vectors which compared equal
+                // The method will return 32 if none of the bytes compared equal
+                var firstEqualIndex = BitOperations.TrailingZeroCount(bmp);
+                results[index] = (byte)firstEqualIndex;
+            }
+
+            return results;
+        }
+    }
+
     public static bool TestShuffle(int[] arr1)
     {
         unsafe

@@ -1,11 +1,102 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System.Numerics;
+using System.Runtime.CompilerServices;
 using System.Runtime.Intrinsics;
+using System.Runtime.Intrinsics.X86;
 using System.Text;
 
 namespace DnaLib;
 
 public static class bla
 {
+    private const byte ANY = 20;
+    private const byte GAP = 21;
+
+    [MethodImpl(MethodImplOptions.AggressiveOptimization)]
+    public static byte[] CompressSimd(ReadOnlySpan<byte> proteinSeq)
+    {
+        unsafe
+        {
+            var results = new byte[proteinSeq.Length];
+            //TODO: handle UBZ, lowercase
+            void* proteinLut = "ARNDCQEGHILKMFPSTWYXJOUBZ-._;;;;"u8.ToArray().AsMemory().Pin().Pointer;
+
+            Vector256<byte> vecInput0 = Vector256.Load((byte*)proteinLut);
+
+            for (var index = 0; index < proteinSeq.Length; index++)
+            {
+                var protAa = proteinSeq[index];
+                // var value = (byte)'M';
+                var value = protAa;
+                Vector256<byte> vecCompare0 = Vector256.Create(value);
+                Vector256<byte> result = Vector256.Equals(vecInput0, vecCompare0);
+
+                // Compare bytes for equality, equal = 0xFF = 255, not equal = 0
+                Vector256<byte> eq = Avx2.CompareEqual(vecInput0, vecCompare0);
+                // Move comparison results into a bitmap of 32 bits
+                var bmp = unchecked((uint)Avx2.MoveMask(eq));
+                // Find index of the first byte in the vectors which compared equal
+                // The method will return 32 if none of the bytes compared equal
+                var firstEqualIndex = BitOperations.TrailingZeroCount(bmp);
+                results[index] = (byte)firstEqualIndex;
+            }
+
+            return results;
+        }
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static byte aa2i(byte a)
+    {
+        switch (a)
+        {
+            case (byte)'A': return 0;
+            case (byte)'R': return 1;
+            case (byte)'N': return 2;
+            case (byte)'D': return 3;
+            case (byte)'C': return 4;
+            case (byte)'Q': return 5;
+            case (byte)'E': return 6;
+            case (byte)'G': return 7;
+            case (byte)'H': return 8;
+            case (byte)'I': return 9;
+            case (byte)'L': return 10;
+            case (byte)'K': return 11;
+            case (byte)'M': return 12;
+            case (byte)'F': return 13;
+            case (byte)'P': return 14;
+            case (byte)'S': return 15;
+            case (byte)'T': return 16;
+            case (byte)'W': return 17;
+            case (byte)'Y': return 18;
+            case (byte)'V': return 19;
+            case (byte)'X': return ANY;
+            case (byte)'J': return ANY;
+            case (byte)'O': return ANY;
+            case (byte)'U': return 4; //Selenocystein -> Cystein
+            case (byte)'B': return 3; //D (or N)
+            case (byte)'Z': return 6; //E (or Q)
+            case (byte)'-': return GAP;
+            case (byte)'.': return GAP;
+            case (byte)'_': return GAP;
+            default: return 31;
+        }
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveOptimization)]
+    public static byte[] Compress(ReadOnlySpan<byte> proteinSeq)
+    {
+        var results = new byte[proteinSeq.Length];
+
+
+        for (var index = 0; index < proteinSeq.Length; index++)
+        {
+            var protAa = proteinSeq[index];
+            results[index] = aa2i(protAa);
+        }
+
+        return results;
+    }
+
     [MethodImpl(MethodImplOptions.AggressiveOptimization)]
     public static bool ContainsAnyExcept64(this ReadOnlySpan<byte> input, byte[] except)
     {

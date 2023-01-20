@@ -23,6 +23,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Dna", "Dna", "{D0027417-3871-49E9-BC23-78D5C10C6011}"
 	ProjectSection(SolutionItems) = preProject
 		Bio\Dna\readme.md = Bio\Dna\readme.md
+		Bio\Dna\Data\protein-sm.fasta = Bio\Dna\Data\protein-sm.fasta
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DnaLib", "Bio\Dna\DnaLib\DnaLib.csproj", "{2987A89A-E2DD-44FA-AF4E-A721EFEF91D0}"
