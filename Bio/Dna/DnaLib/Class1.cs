@@ -8,40 +8,185 @@ namespace DnaLib;
 
 public static class bla
 {
-    private const byte ANY = 20;
-    private const byte GAP = 21;
+    public const byte ANY = 20;
+    public const byte GAP = 21;
+    public static unsafe void* proteinLut = "ARNDCQEGHILKMFPSTWYV;;;;;;;;;;;;"u8.ToArray().AsMemory().Pin().Pointer;
+    public static unsafe void* proteinLut2 = "XJOUBZ-._;;;;;;;;;;;;;;;;;;;l;;;"u8.ToArray().AsMemory().Pin().Pointer;
+    public static readonly unsafe Vector256<byte> vecInput0 = Vector256.Load((byte*)proteinLut);
 
     [MethodImpl(MethodImplOptions.AggressiveOptimization)]
-    public static byte[] CompressSimd(ReadOnlySpan<byte> proteinSeq)
+    public static byte[] CompressSimdInlined(ReadOnlySpan<byte> proteinSeq)
     {
         unsafe
         {
             var results = new byte[proteinSeq.Length];
-            //TODO: handle UBZ, lowercase
-            void* proteinLut = "ARNDCQEGHILKMFPSTWYXJOUBZ-._;;;;"u8.ToArray().AsMemory().Pin().Pointer;
-
-            Vector256<byte> vecInput0 = Vector256.Load((byte*)proteinLut);
+            // void* proteinLutInner = "ARNDCQEGHILKMFPSTWYV;;;;;;;;;;;;"u8.ToArray().AsMemory().Pin().Pointer;
+            Vector256<byte> vecInput0Inner = Vector256.Load((byte*)proteinLut);
 
             for (var index = 0; index < proteinSeq.Length; index++)
             {
                 var protAa = proteinSeq[index];
-                // var value = (byte)'M';
-                var value = protAa;
-                Vector256<byte> vecCompare0 = Vector256.Create(value);
-                Vector256<byte> result = Vector256.Equals(vecInput0, vecCompare0);
+
+                Vector256<byte> vecCompare0 = Vector256.Create(protAa);
 
                 // Compare bytes for equality, equal = 0xFF = 255, not equal = 0
-                Vector256<byte> eq = Avx2.CompareEqual(vecInput0, vecCompare0);
+                Vector256<byte> eq = Avx2.CompareEqual(vecInput0Inner, vecCompare0);
+
                 // Move comparison results into a bitmap of 32 bits
                 var bmp = unchecked((uint)Avx2.MoveMask(eq));
                 // Find index of the first byte in the vectors which compared equal
                 // The method will return 32 if none of the bytes compared equal
                 var firstEqualIndex = BitOperations.TrailingZeroCount(bmp);
+                if (firstEqualIndex != 32)
+                {
+                    results[index] = (byte)firstEqualIndex;
+                    continue;
+                }
+
+                switch (protAa)
+                {
+                    case (byte)'X':
+                    case (byte)'J':
+                    case (byte)'O':
+                        firstEqualIndex = ANY;
+                        break;
+                    case (byte)'U':
+                        firstEqualIndex = 4; //Selenocystein -> Cystein
+                        break;
+                    case (byte)'B':
+                        firstEqualIndex = 3; //D (or N)
+                        break;
+                    case (byte)'Z':
+                        firstEqualIndex = 6; //E (or Q)
+                        break;
+                    case (byte)'-':
+                    case (byte)'.':
+                    case (byte)'_':
+                        firstEqualIndex = GAP;
+                        break;
+                }
+
                 results[index] = (byte)firstEqualIndex;
             }
 
             return results;
         }
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveOptimization)]
+    public static byte[] CompressSimd(ReadOnlySpan<byte> proteinSeq)
+    {
+        // ReSharper disable once RedundantUnsafeContext
+        unsafe
+        {
+            var results = new byte[proteinSeq.Length];
+            Vector256<byte> vecInput0Inner = Vector256.Load((byte*)proteinLut);
+
+            for (var index = 0; index < proteinSeq.Length; index++)
+                results[index] = aa2iSimdLut(proteinSeq[index], vecInput0Inner);
+
+            return results;
+        }
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveOptimization)]
+    public static byte[] CompressSimdLutStatic(ReadOnlySpan<byte> proteinSeq)
+    {
+        // ReSharper disable once RedundantUnsafeContext
+        unsafe
+        {
+            var results = new byte[proteinSeq.Length];
+            // this temp vecInput0Inner is here so Benchmark.Net gives accurate result, otherwise getting
+            // CORINFO_HELP_GETSHARED_NONGCSTATIC_BASE check within inner loop that slows thing down a lot
+            Vector256<byte> vecInput0Inner = vecInput0;
+            for (var index = 0; index < proteinSeq.Length; index++)
+                results[index] = aa2iSimdLut(proteinSeq[index], vecInput0Inner);
+
+            return results;
+        }
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static byte aa2iSimd1(byte protAa /*, Vector256<byte> lut*/)
+    {
+        Vector256<byte> vecCompare0 = Vector256.Create(protAa);
+
+        // Compare bytes for equality, equal = 0xFF = 255, not equal = 0
+        // Vector256<byte> eq = Avx2.CompareEqual(lut, vecCompare0);
+        Vector256<byte> eq = Avx2.CompareEqual(vecInput0, vecCompare0);
+        // Move comparison results into a bitmap of 32 bits
+
+        var bmp = unchecked((uint)Avx2.MoveMask(eq));
+        // Find index of the first byte in the vectors which compared equal
+        // The method will return 32 if none of the bytes compared equal
+        var firstEqualIndex = BitOperations.TrailingZeroCount(bmp);
+        if (firstEqualIndex != 32) return (byte)firstEqualIndex;
+
+        switch (protAa)
+        {
+            case (byte)'X':
+            case (byte)'J':
+            case (byte)'O':
+                firstEqualIndex = ANY;
+                break;
+            case (byte)'U':
+                firstEqualIndex = 4; //Selenocystein -> Cystein
+                break;
+            case (byte)'B':
+                firstEqualIndex = 3; //D (or N)
+                break;
+            case (byte)'Z':
+                firstEqualIndex = 6; //E (or Q)
+                break;
+            case (byte)'-':
+            case (byte)'.':
+            case (byte)'_':
+                firstEqualIndex = GAP;
+                break;
+        }
+
+        return (byte)firstEqualIndex;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static byte aa2iSimdLut(byte protAa, Vector256<byte> lut)
+    {
+        Vector256<byte> vecCompare0 = Vector256.Create(protAa);
+
+        // Compare bytes for equality, equal = 0xFF = 255, not equal = 0
+        Vector256<byte> eq = Avx2.CompareEqual(lut, vecCompare0);
+        // Move comparison results into a bitmap of 32 bits
+
+        var bmp = unchecked((uint)Avx2.MoveMask(eq));
+        // Find index of the first byte in the vectors which compared equal
+        // The method will return 32 if none of the bytes compared equal
+        var firstEqualIndex = BitOperations.TrailingZeroCount(bmp);
+        if (firstEqualIndex != 32) return (byte)firstEqualIndex;
+
+        switch (protAa)
+        {
+            case (byte)'X':
+            case (byte)'J':
+            case (byte)'O':
+                firstEqualIndex = ANY;
+                break;
+            case (byte)'U':
+                firstEqualIndex = 4; //Selenocystein -> Cystein
+                break;
+            case (byte)'B':
+                firstEqualIndex = 3; //D (or N)
+                break;
+            case (byte)'Z':
+                firstEqualIndex = 6; //E (or Q)
+                break;
+            case (byte)'-':
+            case (byte)'.':
+            case (byte)'_':
+                firstEqualIndex = GAP;
+                break;
+        }
+
+        return (byte)firstEqualIndex;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -92,6 +237,111 @@ public static class bla
         {
             var protAa = proteinSeq[index];
             results[index] = aa2i(protAa);
+        }
+
+        return results;
+    }
+
+    public static byte[] CompressInlined(ReadOnlySpan<byte> proteinSeq)
+    {
+        var results = new byte[proteinSeq.Length];
+
+        for (var index = 0; index < proteinSeq.Length; index++)
+        {
+            var protAa = proteinSeq[index];
+            switch (protAa)
+            {
+                case (byte)'A':
+                    results[index] = 0;
+                    break;
+                case (byte)'R':
+                    results[index] = 1;
+                    break;
+                case (byte)'N':
+                    results[index] = 2;
+                    break;
+                case (byte)'D':
+                    results[index] = 3;
+                    break;
+                case (byte)'C':
+                    results[index] = 4;
+                    break;
+                case (byte)'Q':
+                    results[index] = 5;
+                    break;
+                case (byte)'E':
+                    results[index] = 6;
+                    break;
+                case (byte)'G':
+                    results[index] = 7;
+                    break;
+                case (byte)'H':
+                    results[index] = 8;
+                    break;
+                case (byte)'I':
+                    results[index] = 9;
+                    break;
+                case (byte)'L':
+                    results[index] = 10;
+                    break;
+                case (byte)'K':
+                    results[index] = 11;
+                    break;
+                case (byte)'M':
+                    results[index] = 12;
+                    break;
+                case (byte)'F':
+                    results[index] = 13;
+                    break;
+                case (byte)'P':
+                    results[index] = 14;
+                    break;
+                case (byte)'S':
+                    results[index] = 15;
+                    break;
+                case (byte)'T':
+                    results[index] = 16;
+                    break;
+                case (byte)'W':
+                    results[index] = 17;
+                    break;
+                case (byte)'Y':
+                    results[index] = 18;
+                    break;
+                case (byte)'V':
+                    results[index] = 19;
+                    break;
+                case (byte)'X':
+                    results[index] = ANY;
+                    break;
+                case (byte)'J':
+                    results[index] = ANY;
+                    break;
+                case (byte)'O':
+                    results[index] = ANY;
+                    break;
+                case (byte)'U':
+                    results[index] = 4; //Selenocystein -> Cystein
+                    break;
+                case (byte)'B':
+                    results[index] = 3; //D (or N)
+                    break;
+                case (byte)'Z':
+                    results[index] = 6; //E (or Q)
+                    break;
+                case (byte)'-':
+                    results[index] = GAP;
+                    break;
+                case (byte)'.':
+                    results[index] = GAP;
+                    break;
+                case (byte)'_':
+                    results[index] = GAP;
+                    break;
+                default:
+                    results[index] = 31;
+                    break;
+            }
         }
 
         return results;

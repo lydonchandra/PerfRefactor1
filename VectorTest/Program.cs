@@ -2,6 +2,7 @@
 using System.Runtime.Intrinsics;
 using System.Runtime.Intrinsics.X86;
 using System.Text.Json;
+using DnaLib;
 
 const int start = 20;
 const int length = 32;
@@ -24,9 +25,14 @@ var arr1 = Enumerable.Range(start, start + length).ToArray();
 // // The method will return 32 if none of the bytes compared equal
 // var firstEqualIndex = BitOperations.TrailingZeroCount(bmp);
 
-ReadOnlySpan<byte> proteinSeq = "MLDPTGTYRRPRDTQDSRQKRRQDCLDPTGQY"u8;
-var compressedProteinSeq = Util.Compress(proteinSeq);
-compressedProteinSeq.ToString();
+// bla.aa2iSimd1((byte)'A');
+_ = bla.vecInput0;
+bla.CompressSimdLutStatic("A"u8);
+// bla.CompressSimd("A"u8);
+
+// ReadOnlySpan<byte> proteinSeq = "MLDPTGTYRRPRDTQDSRQKRRQDCLDPTGQY"u8;
+// var compressedProteinSeq = Util.Compress(proteinSeq);
+// compressedProteinSeq.ToString();
 
 public static class Util
 {

@@ -16,6 +16,7 @@ config.AddColumn(new TagColumn("FileSize", s => "20MB"));
 // var summary = BenchmarkRunner.Run<DnaBenchmark1>(config);
 // var summary2 = BenchmarkRunner.Run<DnaBenchmarkReadFile>(config);
 var summary2 = BenchmarkRunner.Run<ProteinCompressBenchmark>(config);
+// var summary2 = BenchmarkRunner.Run<LutInvestigationBenchmark>(config);
 
 public enum DataSize
 {
@@ -230,6 +231,67 @@ public class ProteinCompressBenchmark
     public byte[] CompressSimd1()
     {
         return CompressSimd(dataBytes[_path]);
+    }
+
+    [Benchmark]
+    public byte[] CompressSimdLutStatic1()
+    {
+        _ = vecInput0;
+        return CompressSimdLutStatic(dataBytes[_path]);
+    }
+
+    // [Benchmark]
+    // public byte[] CompressSimd1Inlined()
+    // {
+    //     return CompressSimdInlined(dataBytes[_path]);
+    // }
+
+    // [Benchmark]
+    // public byte[] Compress1Inlined()
+    // {
+    //     return CompressInlined(dataBytes[_path]);
+    // }
+    //
+    [Benchmark(Baseline = true)]
+    public byte[] Compress()
+    {
+        return bla.Compress(dataBytes[_path]);
+    }
+}
+
+
+[MemoryDiagnoser]
+[HideColumns("Error", "RatioSD")]
+[SimpleJob(1, 1, 2)]
+[Orderer(SummaryOrderPolicy.FastestToSlowest)]
+public class LutInvestigationBenchmark
+{
+    private readonly C c = new();
+    public Dictionary<string, byte[]> dataBytes = new();
+    [Params(DataSize.sm, DataSize.md)] public DataSize dataSize;
+
+    private string _path => "Data/protein-" + dataSize + ".fasta";
+
+    [GlobalSetup]
+    public void SetupData()
+    {
+        using FileStream fileStream = new(_path, FileMode.Open, FileAccess.Read);
+        using var streamReader = new StreamReader(fileStream);
+        var content = streamReader.ReadToEnd();
+        dataBytes.Add(_path, Encoding.UTF8.GetBytes(content));
+    }
+
+
+    [Benchmark]
+    public byte[] CompressSimd1()
+    {
+        return c.CompressSimd(dataBytes[_path]);
+    }
+
+    [Benchmark]
+    public byte[] CompressSimdLutStatic1()
+    {
+        return c.CompressSimdLutStatic(dataBytes[_path]);
     }
 
     [Benchmark(Baseline = true)]
