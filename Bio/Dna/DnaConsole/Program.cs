@@ -1,12 +1,11 @@
-﻿using System.Text;
-using DnaLib;
+﻿using DnaLib;
 
-var path = "Data/gene-xl.fna";
+// var path = "Data/gene-xl.fna";
 
-using FileStream fileStream = new(path, FileMode.Open, FileAccess.Read);
-using var streamReader = new StreamReader(fileStream);
-var data = await streamReader.ReadToEndAsync();
-var dataBytes = Encoding.UTF8.GetBytes(data);
+// using FileStream fileStream = new(path, FileMode.Open, FileAccess.Read);
+// using var streamReader = new StreamReader(fileStream);
+// var data = await streamReader.ReadToEndAsync();
+// var dataBytes = Encoding.UTF8.GetBytes(data);
 
 // var valid = DnaUtil.ValidateDnaPad128(dataBytes.AsSpan());
 // Console.WriteLine(valid);
@@ -17,5 +16,10 @@ var dataBytes = Encoding.UTF8.GetBytes(data);
 // var valid = DnaUtil.ValidateDnaVec64(dataBytes.AsSpan());
 // Console.WriteLine(valid);
 
-var valid = DnaUtil.ValidateDnaVec768(dataBytes.AsSpan());
-Console.WriteLine(valid);
+// var valid = DnaUtil.ValidateDnaVec768(dataBytes.AsSpan());
+// Console.WriteLine(valid);
+
+_ = bla.vecInput0;
+bla.CompressSimd("A"u8);
+
+bla.CompressSimdInlined("A"u8);

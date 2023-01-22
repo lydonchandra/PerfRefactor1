@@ -10,7 +10,13 @@ public static class bla
 {
     public const byte ANY = 20;
     public const byte GAP = 21;
+
+    private const int x = 32;
     public static unsafe void* proteinLut = "ARNDCQEGHILKMFPSTWYV;;;;;;;;;;;;"u8.ToArray().AsMemory().Pin().Pointer;
+
+    public static unsafe void* proteinLutLower =
+        "arndcqeghilkmfpstwyv;;;;;;;;;;;;"u8.ToArray().AsMemory().Pin().Pointer;
+
     public static unsafe void* proteinLut2 = "XJOUBZ-._;;;;;;;;;;;;;;;;;;;l;;;"u8.ToArray().AsMemory().Pin().Pointer;
     public static readonly unsafe Vector256<byte> vecInput0 = Vector256.Load((byte*)proteinLut);
 
@@ -20,17 +26,19 @@ public static class bla
         unsafe
         {
             var results = new byte[proteinSeq.Length];
-            // void* proteinLutInner = "ARNDCQEGHILKMFPSTWYV;;;;;;;;;;;;"u8.ToArray().AsMemory().Pin().Pointer;
             Vector256<byte> vecInput0Inner = Vector256.Load((byte*)proteinLut);
+            Vector256<byte> eq = new();
+            Vector256<byte> vecCompare0 = new();
+            const byte x = 32;
 
             for (var index = 0; index < proteinSeq.Length; index++)
             {
                 var protAa = proteinSeq[index];
-
-                Vector256<byte> vecCompare0 = Vector256.Create(protAa);
+                if (protAa >= (byte)'a') protAa = (byte)(protAa & ~x);
+                vecCompare0 = Vector256.Create(protAa);
 
                 // Compare bytes for equality, equal = 0xFF = 255, not equal = 0
-                Vector256<byte> eq = Avx2.CompareEqual(vecInput0Inner, vecCompare0);
+                eq = Avx2.CompareEqual(vecInput0Inner, vecCompare0);
 
                 // Move comparison results into a bitmap of 32 bits
                 var bmp = unchecked((uint)Avx2.MoveMask(eq));
@@ -43,30 +51,37 @@ public static class bla
                     continue;
                 }
 
+                byte result;
                 switch (protAa)
                 {
                     case (byte)'X':
                     case (byte)'J':
                     case (byte)'O':
-                        firstEqualIndex = ANY;
+                        result = ANY;
                         break;
                     case (byte)'U':
-                        firstEqualIndex = 4; //Selenocystein -> Cystein
+                        result = 4; //Selenocystein -> Cystein
                         break;
                     case (byte)'B':
-                        firstEqualIndex = 3; //D (or N)
+                        result = 3; //D (or N)
                         break;
                     case (byte)'Z':
-                        firstEqualIndex = 6; //E (or Q)
+                        result = 6; //E (or Q)
                         break;
                     case (byte)'-':
                     case (byte)'.':
                     case (byte)'_':
-                        firstEqualIndex = GAP;
+                        result = GAP;
+                        break;
+                    default:
+                        if (protAa is >= 0 and <= 32)
+                            result = unchecked((byte)-1);
+                        else
+                            result = unchecked((byte)-2);
                         break;
                 }
 
-                results[index] = (byte)firstEqualIndex;
+                results[index] = result;
             }
 
             return results;
@@ -81,9 +96,8 @@ public static class bla
         {
             var results = new byte[proteinSeq.Length];
             Vector256<byte> vecInput0Inner = Vector256.Load((byte*)proteinLut);
-
             for (var index = 0; index < proteinSeq.Length; index++)
-                results[index] = aa2iSimdLut(proteinSeq[index], vecInput0Inner);
+                results[index] = aa2iSimd(proteinSeq[index], vecInput0Inner);
 
             return results;
         }
@@ -106,14 +120,16 @@ public static class bla
         }
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static byte aa2iSimd1(byte protAa /*, Vector256<byte> lut*/)
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
+    public static byte aa2iSimd(byte protAa, Vector256<byte> vecInput1)
     {
-        Vector256<byte> vecCompare0 = Vector256.Create(protAa);
+        // if (protAa is >= (byte)'a' and <= (byte)'z') protAa = (byte)(protAa + (byte)'A' - (byte)'a');
+        if (protAa >= (byte)'a') protAa = (byte)(protAa & ~x);
+
+        Vector256<byte> vecProtAa = Vector256.Create(protAa);
 
         // Compare bytes for equality, equal = 0xFF = 255, not equal = 0
-        // Vector256<byte> eq = Avx2.CompareEqual(lut, vecCompare0);
-        Vector256<byte> eq = Avx2.CompareEqual(vecInput0, vecCompare0);
+        Vector256<byte> eq = Avx2.CompareEqual(vecInput1, vecProtAa);
         // Move comparison results into a bitmap of 32 bits
 
         var bmp = unchecked((uint)Avx2.MoveMask(eq));
@@ -142,19 +158,26 @@ public static class bla
             case (byte)'.':
             case (byte)'_':
                 firstEqualIndex = GAP;
+                break;
+            default:
+                if (protAa is >= 0 and <= 32)
+                    firstEqualIndex = unchecked((byte)-1);
+                else
+                    firstEqualIndex = unchecked((byte)-2);
                 break;
         }
 
         return (byte)firstEqualIndex;
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     public static byte aa2iSimdLut(byte protAa, Vector256<byte> lut)
     {
-        Vector256<byte> vecCompare0 = Vector256.Create(protAa);
+        // if (protAa is >= (byte)'a' and <= (byte)'z') protAa = (byte)(protAa + (byte)'A' - (byte)'a');
+        Vector256<byte> vecProtAa = Vector256.Create(protAa);
 
         // Compare bytes for equality, equal = 0xFF = 255, not equal = 0
-        Vector256<byte> eq = Avx2.CompareEqual(lut, vecCompare0);
+        Vector256<byte> eq = Avx2.CompareEqual(lut, vecProtAa);
         // Move comparison results into a bitmap of 32 bits
 
         var bmp = unchecked((uint)Avx2.MoveMask(eq));
@@ -183,6 +206,12 @@ public static class bla
             case (byte)'.':
             case (byte)'_':
                 firstEqualIndex = GAP;
+                break;
+            default:
+                if (protAa is >= 0 and <= 32)
+                    firstEqualIndex = unchecked((byte)-1);
+                else
+                    firstEqualIndex = unchecked((byte)-2);
                 break;
         }
 
@@ -192,6 +221,8 @@ public static class bla
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static byte aa2i(byte a)
     {
+        if (a is >= (byte)'a' and <= (byte)'z') a = (byte)(a + (byte)'A' - (byte)'a');
+
         switch (a)
         {
             case (byte)'A': return 0;
@@ -223,7 +254,10 @@ public static class bla
             case (byte)'-': return GAP;
             case (byte)'.': return GAP;
             case (byte)'_': return GAP;
-            default: return 31;
+            default:
+                if (a is >= 0 and <= 32)
+                    return unchecked((byte)-1);
+                return unchecked((byte)-2);
         }
     }
 
@@ -232,116 +266,10 @@ public static class bla
     {
         var results = new byte[proteinSeq.Length];
 
-
         for (var index = 0; index < proteinSeq.Length; index++)
         {
             var protAa = proteinSeq[index];
             results[index] = aa2i(protAa);
-        }
-
-        return results;
-    }
-
-    public static byte[] CompressInlined(ReadOnlySpan<byte> proteinSeq)
-    {
-        var results = new byte[proteinSeq.Length];
-
-        for (var index = 0; index < proteinSeq.Length; index++)
-        {
-            var protAa = proteinSeq[index];
-            switch (protAa)
-            {
-                case (byte)'A':
-                    results[index] = 0;
-                    break;
-                case (byte)'R':
-                    results[index] = 1;
-                    break;
-                case (byte)'N':
-                    results[index] = 2;
-                    break;
-                case (byte)'D':
-                    results[index] = 3;
-                    break;
-                case (byte)'C':
-                    results[index] = 4;
-                    break;
-                case (byte)'Q':
-                    results[index] = 5;
-                    break;
-                case (byte)'E':
-                    results[index] = 6;
-                    break;
-                case (byte)'G':
-                    results[index] = 7;
-                    break;
-                case (byte)'H':
-                    results[index] = 8;
-                    break;
-                case (byte)'I':
-                    results[index] = 9;
-                    break;
-                case (byte)'L':
-                    results[index] = 10;
-                    break;
-                case (byte)'K':
-                    results[index] = 11;
-                    break;
-                case (byte)'M':
-                    results[index] = 12;
-                    break;
-                case (byte)'F':
-                    results[index] = 13;
-                    break;
-                case (byte)'P':
-                    results[index] = 14;
-                    break;
-                case (byte)'S':
-                    results[index] = 15;
-                    break;
-                case (byte)'T':
-                    results[index] = 16;
-                    break;
-                case (byte)'W':
-                    results[index] = 17;
-                    break;
-                case (byte)'Y':
-                    results[index] = 18;
-                    break;
-                case (byte)'V':
-                    results[index] = 19;
-                    break;
-                case (byte)'X':
-                    results[index] = ANY;
-                    break;
-                case (byte)'J':
-                    results[index] = ANY;
-                    break;
-                case (byte)'O':
-                    results[index] = ANY;
-                    break;
-                case (byte)'U':
-                    results[index] = 4; //Selenocystein -> Cystein
-                    break;
-                case (byte)'B':
-                    results[index] = 3; //D (or N)
-                    break;
-                case (byte)'Z':
-                    results[index] = 6; //E (or Q)
-                    break;
-                case (byte)'-':
-                    results[index] = GAP;
-                    break;
-                case (byte)'.':
-                    results[index] = GAP;
-                    break;
-                case (byte)'_':
-                    results[index] = GAP;
-                    break;
-                default:
-                    results[index] = 31;
-                    break;
-            }
         }
 
         return results;

@@ -39,6 +39,10 @@
         <Link>Data\gene-xl.fna</Link>
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </Content>
+      <Content Include="..\Data\protein-lg.fasta">
+        <Link>Data\protein-lg.fasta</Link>
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
       <Content Include="..\Data\protein-md.fasta">
         <Link>Data\protein-md.fasta</Link>
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

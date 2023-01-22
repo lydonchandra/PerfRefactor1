@@ -1,0 +1,217 @@
+/home/don/RiderProjects/Refactor1/VectorTest/bin/Release/net7.0/VectorTest
+; Assembly listing for method DnaLib.bla:CompressSimd(System.ReadOnlySpan`1[ubyte]):<unnamed>
+; Emitting BLENDED_CODE for X64 CPU with AVX - Unix
+; Tier-1 compilation
+; optimized code
+; rbp based frame
+; fully interruptible
+; No PGO data
+; 1 inlinees with PGO data; 2 single block inlinees; 1 inlinees without PGO data
+
+G_M000_IG01:                ;; offset=0000H
+       55                   push     rbp
+       4157                 push     r15
+       4156                 push     r14
+       53                   push     rbx
+       50                   push     rax
+       C5F877               vzeroupper
+       488D6C2420           lea      rbp, [rsp+20H]
+       4C8BF7               mov      r14, rdi
+       8BDE                 mov      ebx, esi
+
+G_M000_IG02:                ;; offset=0014H
+       4863F3               movsxd   rsi, ebx
+       48BFB8176496027F0000 mov      rdi, 0x7F02966417B8
+       E86A0A607E           call     CORINFO_HELP_NEWARR_1_VC
+       4C8BF8               mov      r15, rax
+       48BF705F8996027F0000 mov      rdi, 0x7F0296895F70
+       BE05000000           mov      esi, 5
+       E863AB767E           call     CORINFO_HELP_GETSHARED_NONGCSTATIC_BASE
+       488B05D41C3600       mov      rax, qword ptr [(reloc 0x7f0296895fb8)]
+       C5FE6F00             vmovdqu  ymm0, ymmword ptr[rax]
+       33C0                 xor      eax, eax
+       85DB                 test     ebx, ebx
+       0F8E57010000         jle      G_M000_IG28
+       85DB                 test     ebx, ebx
+       0F8CAB000000         jl       G_M000_IG16
+       41395F08             cmp      dword ptr [r15+08H], ebx
+       0F8CA1000000         jl       G_M000_IG16
+                            align    [0 bytes for IG03]
+
+G_M000_IG03:                ;; offset=0064H
+       8BF8                 mov      edi, eax
+       410FB6343E           movzx    rsi, byte  ptr [r14+rdi]
+       C5F96ECE             vmovd    xmm1, esi
+       C4E27D78C9           vpbroadcastb ymm1, ymm1
+       C5FD74C9             vpcmpeqb ymm1, ymm0, ymm1
+       C5FDD7D1             vpmovmskb edx, ymm1
+       F30FBCD2             tzcnt    edx, edx
+       83FA20               cmp      edx, 32
+       7405                 je       SHORT G_M000_IG05
+
+G_M000_IG04:                ;; offset=0085H
+       0FB6CA               movzx    rcx, dl
+       EB64                 jmp      SHORT G_M000_IG14
+
+G_M000_IG05:                ;; offset=008AH
+       83FE4F               cmp      esi, 79
+       7725                 ja       SHORT G_M000_IG07
+       83FE42               cmp      esi, 66
+       7714                 ja       SHORT G_M000_IG06
+       8D4ED3               lea      ecx, [rsi-2DH]
+       83F901               cmp      ecx, 1
+       764A                 jbe      SHORT G_M000_IG12
+       83FE42               cmp      esi, 66
+       754A                 jne      SHORT G_M000_IG13
+       BA03000000           mov      edx, 3
+       EB43                 jmp      SHORT G_M000_IG13
+
+G_M000_IG06:                ;; offset=00A8H
+       83FE4A               cmp      esi, 74
+       7424                 je       SHORT G_M000_IG09
+       83FE4F               cmp      esi, 79
+       741F                 je       SHORT G_M000_IG09
+       EB37                 jmp      SHORT G_M000_IG13
+
+G_M000_IG07:                ;; offset=00B4H
+       83FE58               cmp      esi, 88
+       770C                 ja       SHORT G_M000_IG08
+       83FE55               cmp      esi, 85
+       741A                 je       SHORT G_M000_IG10
+       83FE58               cmp      esi, 88
+       740E                 je       SHORT G_M000_IG09
+       EB26                 jmp      SHORT G_M000_IG13
+
+G_M000_IG08:                ;; offset=00C5H
+       83FE5A               cmp      esi, 90
+       7415                 je       SHORT G_M000_IG11
+       83FE5F               cmp      esi, 95
+       7417                 je       SHORT G_M000_IG12
+       EB1A                 jmp      SHORT G_M000_IG13
+
+G_M000_IG09:                ;; offset=00D1H
+       BA14000000           mov      edx, 20
+       EB13                 jmp      SHORT G_M000_IG13
+
+G_M000_IG10:                ;; offset=00D8H
+       BA04000000           mov      edx, 4
+       EB0C                 jmp      SHORT G_M000_IG13
+
+G_M000_IG11:                ;; offset=00DFH
+       BA06000000           mov      edx, 6
+       EB05                 jmp      SHORT G_M000_IG13
+
+G_M000_IG12:                ;; offset=00E6H
+       BA15000000           mov      edx, 21
+
+G_M000_IG13:                ;; offset=00EBH
+       0FB6CA               movzx    rcx, dl
+
+G_M000_IG14:                ;; offset=00EEH
+       41884C3F10           mov      byte  ptr [r15+rdi+10H], cl
+       FFC0                 inc      eax
+       3BC3                 cmp      eax, ebx
+       0F8C67FFFFFF         jl       G_M000_IG03
+
+G_M000_IG15:                ;; offset=00FDH
+       E9A4000000           jmp      G_M000_IG28
+
+G_M000_IG16:                ;; offset=0102H
+       8BF0                 mov      esi, eax
+       410FB63436           movzx    rsi, byte  ptr [r14+rsi]
+       C5F96ECE             vmovd    xmm1, esi
+       C4E27D78C9           vpbroadcastb ymm1, ymm1
+       C5FD74C9             vpcmpeqb ymm1, ymm0, ymm1
+       C5FDD7D1             vpmovmskb edx, ymm1
+       F30FBCD2             tzcnt    edx, edx
+       83FA20               cmp      edx, 32
+       7405                 je       SHORT G_M000_IG18
+
+G_M000_IG17:                ;; offset=0123H
+       0FB6CA               movzx    rcx, dl
+       EB64                 jmp      SHORT G_M000_IG27
+
+G_M000_IG18:                ;; offset=0128H
+       83FE4F               cmp      esi, 79
+       7725                 ja       SHORT G_M000_IG20
+       83FE42               cmp      esi, 66
+       7714                 ja       SHORT G_M000_IG19
+       8D4ED3               lea      ecx, [rsi-2DH]
+       83F901               cmp      ecx, 1
+       764A                 jbe      SHORT G_M000_IG25
+       83FE42               cmp      esi, 66
+       754A                 jne      SHORT G_M000_IG26
+       BA03000000           mov      edx, 3
+       EB43                 jmp      SHORT G_M000_IG26
+
+G_M000_IG19:                ;; offset=0146H
+       83FE4A               cmp      esi, 74
+       7424                 je       SHORT G_M000_IG22
+       83FE4F               cmp      esi, 79
+       741F                 je       SHORT G_M000_IG22
+       EB37                 jmp      SHORT G_M000_IG26
+
+G_M000_IG20:                ;; offset=0152H
+       83FE58               cmp      esi, 88
+       770C                 ja       SHORT G_M000_IG21
+       83FE55               cmp      esi, 85
+       741A                 je       SHORT G_M000_IG23
+       83FE58               cmp      esi, 88
+       740E                 je       SHORT G_M000_IG22
+       EB26                 jmp      SHORT G_M000_IG26
+
+G_M000_IG21:                ;; offset=0163H
+       83FE5A               cmp      esi, 90
+       7415                 je       SHORT G_M000_IG24
+       83FE5F               cmp      esi, 95
+       7417                 je       SHORT G_M000_IG25
+       EB1A                 jmp      SHORT G_M000_IG26
+
+G_M000_IG22:                ;; offset=016FH
+       BA14000000           mov      edx, 20
+       EB13                 jmp      SHORT G_M000_IG26
+
+G_M000_IG23:                ;; offset=0176H
+       BA04000000           mov      edx, 4
+       EB0C                 jmp      SHORT G_M000_IG26
+
+G_M000_IG24:                ;; offset=017DH
+       BA06000000           mov      edx, 6
+       EB05                 jmp      SHORT G_M000_IG26
+
+G_M000_IG25:                ;; offset=0184H
+       BA15000000           mov      edx, 21
+
+G_M000_IG26:                ;; offset=0189H
+       0FB6CA               movzx    rcx, dl
+
+G_M000_IG27:                ;; offset=018CH
+       413B4708             cmp      eax, dword ptr [r15+08H]
+       7322                 jae      SHORT G_M000_IG30
+       8BF8                 mov      edi, eax
+       41884C3F10           mov      byte  ptr [r15+rdi+10H], cl
+       FFC0                 inc      eax
+       3BC3                 cmp      eax, ebx
+       0F8C5FFFFFFF         jl       G_M000_IG16
+
+G_M000_IG28:                ;; offset=01A3H
+       498BC7               mov      rax, r15
+
+G_M000_IG29:                ;; offset=01A6H
+       C5F877               vzeroupper
+       4883C408             add      rsp, 8
+       5B                   pop      rbx
+       415E                 pop      r14
+       415F                 pop      r15
+       5D                   pop      rbp
+       C3                   ret
+
+G_M000_IG30:                ;; offset=01B4H
+       E8176B607E           call     CORINFO_HELP_RNGCHKFAIL
+       CC                   int3
+
+; Total bytes of code 442
+
+
+Process finished with exit code 0.
+

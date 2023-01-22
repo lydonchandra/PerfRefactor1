@@ -26,6 +26,10 @@ var arr1 = Enumerable.Range(start, start + length).ToArray();
 // var firstEqualIndex = BitOperations.TrailingZeroCount(bmp);
 
 // bla.aa2iSimd1((byte)'A');
+
+var a = unchecked((byte)-1);
+CommonUtil.Dumper.Dump(a);
+
 _ = bla.vecInput0;
 bla.CompressSimdLutStatic("A"u8);
 // bla.CompressSimd("A"u8);

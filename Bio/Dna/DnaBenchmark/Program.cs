@@ -7,10 +7,9 @@ using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Order;
 using BenchmarkDotNet.Running;
 using DnaLib;
-using static DnaLib.bla;
 
 var config = DefaultConfig.Instance.With(ConfigOptions.DisableOptimizationsValidator);
-config.AddColumn(new TagColumn("FileSize", s => "20MB"));
+config.AddColumn(new TagColumn("dataSizeKib", s => "20MB"));
 
 // var summary = BenchmarkRunner.Run<Vector1Benchmark>(config);
 // var summary = BenchmarkRunner.Run<DnaBenchmark1>(config);
@@ -213,7 +212,9 @@ public class Vector1Benchmark
 public class ProteinCompressBenchmark
 {
     public Dictionary<string, byte[]> dataBytes = new();
-    [Params(DataSize.sm, DataSize.md)] public DataSize dataSize;
+
+    [Params(DataSize.sm, DataSize.md, DataSize.lg)]
+    public DataSize dataSize;
 
     private string _path => "Data/protein-" + dataSize + ".fasta";
 
@@ -226,25 +227,17 @@ public class ProteinCompressBenchmark
         dataBytes.Add(_path, Encoding.UTF8.GetBytes(content));
     }
 
-
     [Benchmark]
-    public byte[] CompressSimd1()
+    public byte[] CompressSimd()
     {
-        return CompressSimd(dataBytes[_path]);
+        return bla.CompressSimd(dataBytes[_path]);
     }
 
     [Benchmark]
-    public byte[] CompressSimdLutStatic1()
+    public byte[] CompressSimdInlined()
     {
-        _ = vecInput0;
-        return CompressSimdLutStatic(dataBytes[_path]);
+        return bla.CompressSimdInlined(dataBytes[_path]);
     }
-
-    // [Benchmark]
-    // public byte[] CompressSimd1Inlined()
-    // {
-    //     return CompressSimdInlined(dataBytes[_path]);
-    // }
 
     // [Benchmark]
     // public byte[] Compress1Inlined()
@@ -260,43 +253,52 @@ public class ProteinCompressBenchmark
 }
 
 
-[MemoryDiagnoser]
-[HideColumns("Error", "RatioSD")]
-[SimpleJob(1, 1, 2)]
-[Orderer(SummaryOrderPolicy.FastestToSlowest)]
-public class LutInvestigationBenchmark
-{
-    private readonly C c = new();
-    public Dictionary<string, byte[]> dataBytes = new();
-    [Params(DataSize.sm, DataSize.md)] public DataSize dataSize;
-
-    private string _path => "Data/protein-" + dataSize + ".fasta";
-
-    [GlobalSetup]
-    public void SetupData()
-    {
-        using FileStream fileStream = new(_path, FileMode.Open, FileAccess.Read);
-        using var streamReader = new StreamReader(fileStream);
-        var content = streamReader.ReadToEnd();
-        dataBytes.Add(_path, Encoding.UTF8.GetBytes(content));
-    }
-
-
-    [Benchmark]
-    public byte[] CompressSimd1()
-    {
-        return c.CompressSimd(dataBytes[_path]);
-    }
-
-    [Benchmark]
-    public byte[] CompressSimdLutStatic1()
-    {
-        return c.CompressSimdLutStatic(dataBytes[_path]);
-    }
-
-    [Benchmark(Baseline = true)]
-    public byte[] Compress()
-    {
-        return bla.Compress(dataBytes[_path]);
-    }
-}
+// [MemoryDiagnoser]
+// [HideColumns("Error", "RatioSD")]
+// [SimpleJob(1, 1, 2)]
+// [Orderer(SummaryOrderPolicy.FastestToSlowest)]
+// public class LutInvestigationBenchmark
+// {
+//     private readonly C c = new();
+//     public Dictionary<string, byte[]> dataBytes = new();
+//     [Params(DataSize.sm, DataSize.md)] public DataSize dataSize;
+//
+//     // public string dataSizeKib
+//     // {
+//     //     get
+//     //     {
+//     //         var lengthKib = new FileInfo(_path).Length / 1_024;
+//     //         return $"{lengthKib:N} KiB";
+//     //     }
+//     // }
+//
+//     private string _path => $"Data/protein-{dataSize}.fasta";
+//
+//     [GlobalSetup]
+//     public void SetupData()
+//     {
+//         using FileStream fileStream = new(_path, FileMode.Open, FileAccess.Read);
+//         using var streamReader = new StreamReader(fileStream);
+//         var content = streamReader.ReadToEnd();
+//         dataBytes.Add(_path, Encoding.UTF8.GetBytes(content));
+//     }
+//
+//
+//     [Benchmark]
+//     public byte[] CompressSimd()
+//     {
+//         return c.CompressSimd(dataBytes[_path]);
+//     }
+//
+//     // [Benchmark]
+//     // public byte[] CompressSimdLutStatic()
+//     // {
+//     //     return c.CompressSimdLutStatic(dataBytes[_path]);
+//     // }
+//
+//     [Benchmark(Baseline = true)]
+//     public byte[] Compress()
+//     {
+//         return bla.Compress(dataBytes[_path]);
+//     }
+// }
