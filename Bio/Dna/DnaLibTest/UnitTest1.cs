@@ -318,4 +318,18 @@ public class UnitTest1
             bla.aa2iSimdNoIf((byte)'{', vecInput0Upper, vecInput0Lower).ShouldBe(unchecked((byte)-2));
         }
     }
+
+    [Fact]
+    public void TestCompressSimdHarold()
+    {
+        var result = bla.CompressSimdHarold(
+                "ARNDCQEGHILKMFPSTWYVXJOUBZ-._ {ARNDCQEGHILKMFPSTWYVXJOUBZ-._ {"u8)
+            .ToArray();
+        var expected = new sbyte[]
+        {
+            0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 20, 20, 4, 3, 6, -1, -2, 0, 1, 2,
+            3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 20, 20, 4, 3, 6, -1, -2
+        };
+        expected.ShouldBe(expected);
+    }
 }

@@ -279,7 +279,7 @@ public static class bla
                     Vector256<sbyte> data = Vector256.Load(protPtr + i);
                     Vector256<sbyte> is_above_ws = Vector256.GreaterThan(
                         Vector256.Add(data,
-                            Vector256.Create((sbyte)95)),
+                            Vector256.Create((sbyte)95)), //0x5F
                         Vector256.Create((sbyte)94)
                     );
 

@@ -1,5 +1,26 @@
 # Protein compression
 
+## Added CompressSimdHarold
+
+IterationCount=2 LaunchCount=1 WarmupCount=1  
+Error=NA
+
+| Method             | dataSize |        Mean |    StdDev | Ratio |     Gen0 |     Gen1 |     Gen2 |  Allocated | Alloc Ratio |
+|--------------------|----------|------------:|----------:|------:|---------:|---------:|---------:|-----------:|------------:|
+| CompressSimd       | sm       |    31.32 us |  0.095 us |  0.13 |   5.4321 |   0.6714 |        - |   33.66 KB |        1.00 |
+| CompressSimdHarold | sm       |    44.05 us |  0.359 us |  0.19 |  16.3574 |        - |        - |   100.8 KB |        2.99 |
+| Compress           | sm       |   235.39 us |  0.442 us |  1.00 |   5.3711 |   0.4883 |        - |   33.66 KB |        1.00 |
+|                    |          |             |           |       |          |          |          |            |             |
+| CompressSimd       | md       |   158.06 us |  0.063 us |  0.13 |  52.4902 |  52.4902 |  52.4902 |  167.89 KB |        1.00 |
+| CompressSimdHarold | md       |   179.25 us |  1.002 us |  0.15 |        - |        - |        - |  503.34 KB |        3.00 |
+| Compress           | md       | 1,177.89 us |  1.344 us |  1.00 |  50.7813 |  50.7813 |  50.7813 |  167.89 KB |        1.00 |
+|                    |          |             |           |       |          |          |          |            |             |
+| CompressSimdHarold | lg       |   750.96 us |  0.431 us |  0.10 |        - |        - |        - | 2147.01 KB |        2.00 |
+| CompressSimd       | lg       | 1,082.70 us |  1.897 us |  0.14 | 248.0469 | 248.0469 | 248.0469 | 1073.81 KB |        1.00 |
+| Compress           | lg       | 7,642.03 us | 24.837 us |  1.00 | 242.1875 | 242.1875 | 242.1875 | 1073.81 KB |        1.00 |
+
+## Regular vs SIMD
+
 IterationCount=2 LaunchCount=1 WarmupCount=1  
 Error=NA
 
