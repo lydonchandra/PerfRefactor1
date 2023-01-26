@@ -233,11 +233,24 @@ public class ProteinCompressBenchmark
         return bla.CompressSimd(dataBytes[_path]);
     }
 
+    // [Benchmark]
+    // public byte[] CompressSimdNoIf()
+    // {
+    //     return bla.CompressSimdNoIf(dataBytes[_path]);
+    // }
+
     [Benchmark]
-    public byte[] CompressSimdInlined()
+    public Span<sbyte> CompressSimdHarold()
     {
-        return bla.CompressSimdInlined(dataBytes[_path]);
+        return bla.CompressSimdHarold(dataBytes[_path]);
     }
+
+
+    // [Benchmark]
+    // public byte[] CompressSimdInlined()
+    // {
+    //     return bla.CompressSimdInlined(dataBytes[_path]);
+    // }
 
     // [Benchmark]
     // public byte[] Compress1Inlined()

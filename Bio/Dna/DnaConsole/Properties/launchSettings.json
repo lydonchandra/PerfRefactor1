@@ -4,7 +4,7 @@
     "DnaConsole": {
       "commandName": "Project",
       "environmentVariables": {
-        "DOTNET_JitDisasm": "ContainsAnyExcept768"
+        "DOTNET_JitDisasm": "aa2iSimdHarold"
       }
     }
   }

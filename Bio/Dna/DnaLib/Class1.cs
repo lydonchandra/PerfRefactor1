@@ -12,13 +12,14 @@ public static class bla
     public const byte GAP = 21;
 
     private const int x = 32;
-    public static unsafe void* proteinLut = "ARNDCQEGHILKMFPSTWYV;;;;;;;;;;;;"u8.ToArray().AsMemory().Pin().Pointer;
+
+    public static unsafe void* proteinLutUpper =
+        "ARNDCQEGHILKMFPSTWYV;;;;;;;;;;;;"u8.ToArray().AsMemory().Pin().Pointer;
 
     public static unsafe void* proteinLutLower =
         "arndcqeghilkmfpstwyv;;;;;;;;;;;;"u8.ToArray().AsMemory().Pin().Pointer;
 
-    public static unsafe void* proteinLut2 = "XJOUBZ-._;;;;;;;;;;;;;;;;;;;l;;;"u8.ToArray().AsMemory().Pin().Pointer;
-    public static readonly unsafe Vector256<byte> vecInput0 = Vector256.Load((byte*)proteinLut);
+    public static readonly unsafe Vector256<byte> vecInput0 = Vector256.Load((byte*)proteinLutUpper);
 
     [MethodImpl(MethodImplOptions.AggressiveOptimization)]
     public static byte[] CompressSimdInlined(ReadOnlySpan<byte> proteinSeq)
@@ -26,7 +27,7 @@ public static class bla
         unsafe
         {
             var results = new byte[proteinSeq.Length];
-            Vector256<byte> vecInput0Inner = Vector256.Load((byte*)proteinLut);
+            Vector256<byte> vecInput0Inner = Vector256.Load((byte*)proteinLutUpper);
             Vector256<byte> eq = new();
             Vector256<byte> vecCompare0 = new();
             const byte x = 32;
@@ -95,9 +96,25 @@ public static class bla
         unsafe
         {
             var results = new byte[proteinSeq.Length];
-            Vector256<byte> vecInput0Inner = Vector256.Load((byte*)proteinLut);
+            Vector256<byte> vecInput0Inner = Vector256.Load((byte*)proteinLutUpper);
             for (var index = 0; index < proteinSeq.Length; index++)
                 results[index] = aa2iSimd(proteinSeq[index], vecInput0Inner);
+
+            return results;
+        }
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveOptimization)]
+    public static byte[] CompressSimdNoIf(ReadOnlySpan<byte> proteinSeq)
+    {
+        // ReSharper disable once RedundantUnsafeContext
+        unsafe
+        {
+            var results = new byte[proteinSeq.Length];
+            Vector256<byte> vecInput0Upper = Vector256.Load((byte*)proteinLutUpper);
+            Vector256<byte> vecInput0Lower = Vector256.Load((byte*)proteinLutLower);
+            for (var index = 0; index < proteinSeq.Length; index++)
+                results[index] = aa2iSimdNoIf(proteinSeq[index], vecInput0Upper, vecInput0Lower);
 
             return results;
         }
@@ -168,6 +185,158 @@ public static class bla
         }
 
         return (byte)firstEqualIndex;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
+    public static byte aa2iSimdNoIf(byte protAa, Vector256<byte> vecUpper, Vector256<byte> vecLower)
+    {
+        Vector256<byte> vecProtAa = Vector256.Create(protAa);
+
+        // Compare bytes for equality, equal = 0xFF = 255, not equal = 0
+        Vector256<byte> eqUpper = Avx2.CompareEqual(vecUpper, vecProtAa);
+        Vector256<byte> eqLower = Avx2.CompareEqual(vecLower, vecProtAa);
+        Vector256<byte> eq = Vector256.BitwiseOr(eqUpper, eqLower);
+        // Move comparison results into a bitmap of 32 bits
+
+        var bmp = unchecked((uint)Avx2.MoveMask(eq));
+        // Find index of the first byte in the vectors which compared equal
+        // The method will return 32 if none of the bytes compared equal
+        var firstEqualIndex = BitOperations.TrailingZeroCount(bmp);
+        if (firstEqualIndex != 32) return (byte)firstEqualIndex;
+
+        switch (protAa)
+        {
+            case (byte)'X':
+            case (byte)'x':
+            case (byte)'J':
+            case (byte)'j':
+            case (byte)'O':
+            case (byte)'o':
+                firstEqualIndex = ANY;
+                break;
+            case (byte)'U':
+            case (byte)'u':
+                firstEqualIndex = 4; //Selenocystein -> Cystein
+                break;
+            case (byte)'B':
+            case (byte)'b':
+                firstEqualIndex = 3; //D (or N)
+                break;
+            case (byte)'Z':
+            case (byte)'z':
+                firstEqualIndex = 6; //E (or Q)
+                break;
+            case (byte)'-':
+            case (byte)'.':
+            case (byte)'_':
+                firstEqualIndex = GAP;
+                break;
+            default:
+                if (protAa is >= 0 and <= 32)
+                    firstEqualIndex = unchecked((byte)-1);
+                else
+                    firstEqualIndex = unchecked((byte)-2);
+                break;
+        }
+
+        return (byte)firstEqualIndex;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
+    public static Span<sbyte> CompressSimdHarold(ReadOnlySpan<byte> protAaSeq)
+    {
+        // ReadOnlySpan<sbyte> a = MemoryMarshal.Cast<byte, sbyte>(protAaSeq);
+        var outRes = new sbyte[protAaSeq.Length];
+
+        var i = 0;
+        var N = protAaSeq.Length;
+
+        // sbyte dash = 95;
+        // sbyte caret = 94;
+        // sbyte atSymbol = 64;
+        // sbyte backtick = 96;
+        // // sbyte dash = 81;
+        // sbyte dot = 125;
+        do
+        {
+            unsafe
+            {
+                Vector256<sbyte> LUT1 = Vector256.Create(
+                    //@ A  B  C  D  E   F  G  H  I    J         K   L   M   N    O
+                    -2, 0, 3, 4, 3, 6, 13, 7, 8, 9, (sbyte)ANY, 11, 10, 12, 2, (sbyte)ANY,
+                    -2, 0, 3, 4, 3, 6, 13, 7, 8, 9, (sbyte)ANY, 11, 10, 12, 2, (sbyte)ANY);
+
+                Vector256<sbyte> LUT2 = Vector256.Create(
+                    //P Q  R   S   T  U   V   W    X         Y   Z   [   \   ]   ^    _
+                    14, 5, 1, 15, 16, 4, 19, 17, (sbyte)ANY, 18, 6, -2, -2, -2, -2, (sbyte)GAP,
+                    14, 5, 1, 15, 16, 4, 19, 17, (sbyte)ANY, 18, 6, -2, -2, -2, -2, (sbyte)GAP);
+
+                var outPtr = (sbyte*)outRes.AsMemory().Pin().Pointer;
+                var protPtr = (sbyte*)protAaSeq.ToArray().AsMemory().Pin().Pointer;
+
+                for (; i + 31 < N; i += 32)
+                {
+                    Vector256<sbyte> data = Vector256.Load(protPtr + i);
+                    Vector256<sbyte> is_above_ws = Vector256.GreaterThan(
+                        Vector256.Add(data,
+                            Vector256.Create((sbyte)95)),
+                        Vector256.Create((sbyte)94)
+                    );
+
+                    Vector256<sbyte> is_control = Vector256.GreaterThan(
+                        Vector256.Add(data,
+                            Vector256.Create((sbyte)64)),
+                        Vector256.Create((sbyte)94));
+
+                    Vector256<sbyte> is_dash_or_dot = Vector256.GreaterThan(
+                        Vector256.Add(data,
+                            Vector256.Create((sbyte)81)),
+                        Vector256.Create((sbyte)125));
+
+                    Vector256<sbyte> is_not_a_to_z_lower = Vector256.GreaterThan(
+                        Vector256.Subtract(data,
+                            Vector256.Create((sbyte)((byte)'`' - 128))),
+                        Vector256.Create((sbyte)26));
+
+                    Vector256<sbyte> lowercase =
+                        Vector256.Xor(data,
+                            Avx2.AndNot(is_not_a_to_z_lower, Vector256.Create((sbyte)0x20)));
+
+                    Vector256<sbyte> rangeA = Vector256.Subtract(lowercase, Vector256.Create((sbyte)'@'));
+                    Vector256<sbyte> partA = Avx2.Shuffle(
+                        LUT1,
+                        Avx2.AddSaturate(rangeA.AsByte(), Vector256.Create((byte)0x70)).AsSByte());
+
+                    Vector256<sbyte> rangeB = Avx2.Subtract(lowercase, Vector256.Create((sbyte)'P'));
+                    Vector256<sbyte> partB = Avx2.Shuffle(
+                        LUT2,
+                        Avx2.AddSaturate(rangeB.AsByte(), Vector256.Create((byte)0x70)).AsSByte());
+
+
+                    Vector256<sbyte> res = Vector256.BitwiseOr(partA, partB);
+                    res = Avx2.BlendVariable(
+                        res,
+                        Vector256.Create((sbyte)-2),
+                        Vector256.Add(data, Vector256.Create((sbyte)1)));
+
+                    res = Vector256.BitwiseOr(
+                        res,
+                        Vector256.BitwiseOr(
+                            is_above_ws,
+                            Vector256.BitwiseAnd(is_control, Vector256.Create((sbyte)-2))));
+
+                    res = Avx2.BlendVariable(res, Vector256.Create((sbyte)GAP), is_dash_or_dot);
+                    res.Store(outPtr + i);
+                }
+
+                if (i < N && N >= 32)
+                    i = N - 32;
+                else
+                    break;
+            }
+        } while (true);
+
+        return outRes;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]

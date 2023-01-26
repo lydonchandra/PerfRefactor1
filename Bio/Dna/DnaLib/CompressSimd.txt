@@ -29,7 +29,7 @@ G_M000_IG02:                ;; offset=0011H
        85DB                 test     ebx, ebx
        0F8CCA000000         jl       G_M000_IG20
        395808               cmp      dword ptr [rax+08H], ebx
-       0F8CC1000000         jl       G_M000_IG20
+       0F8CC1000000         jl
                             align    [0 bytes for IG03]
 
 G_M000_IG03:                ;; offset=0049H

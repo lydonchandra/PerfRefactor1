@@ -31,7 +31,8 @@ var a = unchecked((byte)-1);
 CommonUtil.Dumper.Dump(a);
 
 _ = bla.vecInput0;
-bla.CompressSimdLutStatic("A"u8);
+// bla.CompressSimdLutStatic("A"u8);
+bla.CompressSimdNoIf("A"u8);
 // bla.CompressSimd("A"u8);
 
 // ReadOnlySpan<byte> proteinSeq = "MLDPTGTYRRPRDTQDSRQKRRQDCLDPTGQY"u8;

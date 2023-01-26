@@ -17,4 +17,8 @@
       <Optimize>true</Optimize>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ClCompile Include="aa2iSimdHarold.cpp" />
+    </ItemGroup>
+
 </Project>

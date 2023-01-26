@@ -175,70 +175,147 @@ public class UnitTest1
     [Fact]
     public void TestAa2iSimd()
     {
-        bla.aa2iSimd((byte)'A').ShouldBe((byte)0);
-        bla.aa2iSimd((byte)'R').ShouldBe((byte)1);
-        bla.aa2iSimd((byte)'N').ShouldBe((byte)2);
-        bla.aa2iSimd((byte)'D').ShouldBe((byte)3);
-        bla.aa2iSimd((byte)'C').ShouldBe((byte)4);
-        bla.aa2iSimd((byte)'Q').ShouldBe((byte)5);
-        bla.aa2iSimd((byte)'E').ShouldBe((byte)6);
-        bla.aa2iSimd((byte)'G').ShouldBe((byte)7);
-        bla.aa2iSimd((byte)'H').ShouldBe((byte)8);
-        bla.aa2iSimd((byte)'I').ShouldBe((byte)9);
-        bla.aa2iSimd((byte)'L').ShouldBe((byte)10);
-        bla.aa2iSimd((byte)'K').ShouldBe((byte)11);
-        bla.aa2iSimd((byte)'M').ShouldBe((byte)12);
-        bla.aa2iSimd((byte)'F').ShouldBe((byte)13);
-        bla.aa2iSimd((byte)'P').ShouldBe((byte)14);
-        bla.aa2iSimd((byte)'S').ShouldBe((byte)15);
-        bla.aa2iSimd((byte)'T').ShouldBe((byte)16);
-        bla.aa2iSimd((byte)'W').ShouldBe((byte)17);
-        bla.aa2iSimd((byte)'Y').ShouldBe((byte)18);
-        bla.aa2iSimd((byte)'V').ShouldBe((byte)19);
-        bla.aa2iSimd((byte)'X').ShouldBe(bla.ANY);
-        bla.aa2iSimd((byte)'J').ShouldBe(bla.ANY);
-        bla.aa2iSimd((byte)'O').ShouldBe(bla.ANY);
-        bla.aa2iSimd((byte)'U').ShouldBe((byte)4);
-        bla.aa2iSimd((byte)'B').ShouldBe((byte)3);
-        bla.aa2iSimd((byte)'Z').ShouldBe((byte)6);
-        bla.aa2iSimd((byte)'-').ShouldBe(bla.GAP);
-        bla.aa2iSimd((byte)'.').ShouldBe(bla.GAP);
-        bla.aa2iSimd((byte)'_').ShouldBe(bla.GAP);
+        unsafe
+        {
+            Vector256<byte> vecInput0Upper = Vector256.Load((byte*)bla.proteinLutUpper);
+            bla.aa2iSimd((byte)'A', vecInput0Upper).ShouldBe((byte)0);
+            bla.aa2iSimd((byte)'R', vecInput0Upper).ShouldBe((byte)1);
+            bla.aa2iSimd((byte)'N', vecInput0Upper).ShouldBe((byte)2);
+            bla.aa2iSimd((byte)'D', vecInput0Upper).ShouldBe((byte)3);
+            bla.aa2iSimd((byte)'C', vecInput0Upper).ShouldBe((byte)4);
+            bla.aa2iSimd((byte)'Q', vecInput0Upper).ShouldBe((byte)5);
+            bla.aa2iSimd((byte)'E', vecInput0Upper).ShouldBe((byte)6);
+            bla.aa2iSimd((byte)'G', vecInput0Upper).ShouldBe((byte)7);
+            bla.aa2iSimd((byte)'H', vecInput0Upper).ShouldBe((byte)8);
+            bla.aa2iSimd((byte)'I', vecInput0Upper).ShouldBe((byte)9);
+            bla.aa2iSimd((byte)'L', vecInput0Upper).ShouldBe((byte)10);
+            bla.aa2iSimd((byte)'K', vecInput0Upper).ShouldBe((byte)11);
+            bla.aa2iSimd((byte)'M', vecInput0Upper).ShouldBe((byte)12);
+            bla.aa2iSimd((byte)'F', vecInput0Upper).ShouldBe((byte)13);
+            bla.aa2iSimd((byte)'P', vecInput0Upper).ShouldBe((byte)14);
+            bla.aa2iSimd((byte)'S', vecInput0Upper).ShouldBe((byte)15);
+            bla.aa2iSimd((byte)'T', vecInput0Upper).ShouldBe((byte)16);
+            bla.aa2iSimd((byte)'W', vecInput0Upper).ShouldBe((byte)17);
+            bla.aa2iSimd((byte)'Y', vecInput0Upper).ShouldBe((byte)18);
+            bla.aa2iSimd((byte)'V', vecInput0Upper).ShouldBe((byte)19);
+            bla.aa2iSimd((byte)'X', vecInput0Upper).ShouldBe(bla.ANY);
+            bla.aa2iSimd((byte)'J', vecInput0Upper).ShouldBe(bla.ANY);
+            bla.aa2iSimd((byte)'O', vecInput0Upper).ShouldBe(bla.ANY);
+            bla.aa2iSimd((byte)'U', vecInput0Upper).ShouldBe((byte)4);
+            bla.aa2iSimd((byte)'B', vecInput0Upper).ShouldBe((byte)3);
+            bla.aa2iSimd((byte)'Z', vecInput0Upper).ShouldBe((byte)6);
+            bla.aa2iSimd((byte)'-', vecInput0Upper).ShouldBe(bla.GAP);
+            bla.aa2iSimd((byte)'.', vecInput0Upper).ShouldBe(bla.GAP);
+            bla.aa2iSimd((byte)'_', vecInput0Upper).ShouldBe(bla.GAP);
 
-        bla.aa2iSimd((byte)' ').ShouldBe(unchecked((byte)-1));
-        bla.aa2iSimd((byte)'{').ShouldBe(unchecked((byte)-2));
+            bla.aa2iSimd((byte)' ', vecInput0Upper).ShouldBe(unchecked((byte)-1));
+            bla.aa2iSimd((byte)'{', vecInput0Upper).ShouldBe(unchecked((byte)-2));
+        }
     }
 
     [Fact]
     public void TestAa2iSimdLowercase()
     {
-        bla.aa2iSimd((byte)'a').ShouldBe((byte)0);
-        bla.aa2iSimd((byte)'r').ShouldBe((byte)1);
-        bla.aa2iSimd((byte)'n').ShouldBe((byte)2);
-        bla.aa2iSimd((byte)'d').ShouldBe((byte)3);
-        bla.aa2iSimd((byte)'c').ShouldBe((byte)4);
-        bla.aa2iSimd((byte)'q').ShouldBe((byte)5);
-        bla.aa2iSimd((byte)'e').ShouldBe((byte)6);
-        bla.aa2iSimd((byte)'g').ShouldBe((byte)7);
-        bla.aa2iSimd((byte)'h').ShouldBe((byte)8);
-        bla.aa2iSimd((byte)'i').ShouldBe((byte)9);
-        bla.aa2iSimd((byte)'l').ShouldBe((byte)10);
-        bla.aa2iSimd((byte)'k').ShouldBe((byte)11);
-        bla.aa2iSimd((byte)'m').ShouldBe((byte)12);
-        bla.aa2iSimd((byte)'f').ShouldBe((byte)13);
-        bla.aa2iSimd((byte)'p').ShouldBe((byte)14);
-        bla.aa2iSimd((byte)'s').ShouldBe((byte)15);
-        bla.aa2iSimd((byte)'t').ShouldBe((byte)16);
-        bla.aa2iSimd((byte)'w').ShouldBe((byte)17);
-        bla.aa2iSimd((byte)'y').ShouldBe((byte)18);
-        bla.aa2iSimd((byte)'v').ShouldBe((byte)19);
-        bla.aa2iSimd((byte)'x').ShouldBe(bla.ANY);
-        bla.aa2iSimd((byte)'j').ShouldBe(bla.ANY);
-        bla.aa2iSimd((byte)'o').ShouldBe(bla.ANY);
-        bla.aa2iSimd((byte)'u').ShouldBe((byte)4);
-        bla.aa2iSimd((byte)'b').ShouldBe((byte)3);
-        bla.aa2iSimd((byte)'z').ShouldBe((byte)6);
-        bla.aa2iSimd((byte)' ').ShouldBe(unchecked((byte)-1));
-        bla.aa2iSimd((byte)'{').ShouldBe(unchecked((byte)-2));
+        unsafe
+        {
+            Vector256<byte> vecInput0Upper = Vector256.Load((byte*)bla.proteinLutUpper);
+
+            bla.aa2iSimd((byte)'a', vecInput0Upper).ShouldBe((byte)0);
+            bla.aa2iSimd((byte)'r', vecInput0Upper).ShouldBe((byte)1);
+            bla.aa2iSimd((byte)'n', vecInput0Upper).ShouldBe((byte)2);
+            bla.aa2iSimd((byte)'d', vecInput0Upper).ShouldBe((byte)3);
+            bla.aa2iSimd((byte)'c', vecInput0Upper).ShouldBe((byte)4);
+            bla.aa2iSimd((byte)'q', vecInput0Upper).ShouldBe((byte)5);
+            bla.aa2iSimd((byte)'e', vecInput0Upper).ShouldBe((byte)6);
+            bla.aa2iSimd((byte)'g', vecInput0Upper).ShouldBe((byte)7);
+            bla.aa2iSimd((byte)'h', vecInput0Upper).ShouldBe((byte)8);
+            bla.aa2iSimd((byte)'i', vecInput0Upper).ShouldBe((byte)9);
+            bla.aa2iSimd((byte)'l', vecInput0Upper).ShouldBe((byte)10);
+            bla.aa2iSimd((byte)'k', vecInput0Upper).ShouldBe((byte)11);
+            bla.aa2iSimd((byte)'m', vecInput0Upper).ShouldBe((byte)12);
+            bla.aa2iSimd((byte)'f', vecInput0Upper).ShouldBe((byte)13);
+            bla.aa2iSimd((byte)'p', vecInput0Upper).ShouldBe((byte)14);
+            bla.aa2iSimd((byte)'s', vecInput0Upper).ShouldBe((byte)15);
+            bla.aa2iSimd((byte)'t', vecInput0Upper).ShouldBe((byte)16);
+            bla.aa2iSimd((byte)'w', vecInput0Upper).ShouldBe((byte)17);
+            bla.aa2iSimd((byte)'y', vecInput0Upper).ShouldBe((byte)18);
+            bla.aa2iSimd((byte)'v', vecInput0Upper).ShouldBe((byte)19);
+            bla.aa2iSimd((byte)'x', vecInput0Upper).ShouldBe(bla.ANY);
+            bla.aa2iSimd((byte)'j', vecInput0Upper).ShouldBe(bla.ANY);
+            bla.aa2iSimd((byte)'o', vecInput0Upper).ShouldBe(bla.ANY);
+            bla.aa2iSimd((byte)'u', vecInput0Upper).ShouldBe((byte)4);
+            bla.aa2iSimd((byte)'b', vecInput0Upper).ShouldBe((byte)3);
+            bla.aa2iSimd((byte)'z', vecInput0Upper).ShouldBe((byte)6);
+            bla.aa2iSimd((byte)' ', vecInput0Upper).ShouldBe(unchecked((byte)-1));
+            bla.aa2iSimd((byte)'{', vecInput0Upper).ShouldBe(unchecked((byte)-2));
+        }
+    }
+
+    [Fact]
+    public void TestAa2iSimdNoIf()
+    {
+        unsafe
+        {
+            Vector256<byte> vecInput0Upper = Vector256.Load((byte*)bla.proteinLutUpper);
+            Vector256<byte> vecInput0Lower = Vector256.Load((byte*)bla.proteinLutLower);
+
+            bla.aa2iSimdNoIf((byte)'A', vecInput0Upper, vecInput0Lower).ShouldBe((byte)0);
+            bla.aa2iSimdNoIf((byte)'R', vecInput0Upper, vecInput0Lower).ShouldBe((byte)1);
+            bla.aa2iSimdNoIf((byte)'N', vecInput0Upper, vecInput0Lower).ShouldBe((byte)2);
+            bla.aa2iSimdNoIf((byte)'D', vecInput0Upper, vecInput0Lower).ShouldBe((byte)3);
+            bla.aa2iSimdNoIf((byte)'C', vecInput0Upper, vecInput0Lower).ShouldBe((byte)4);
+            bla.aa2iSimdNoIf((byte)'Q', vecInput0Upper, vecInput0Lower).ShouldBe((byte)5);
+            bla.aa2iSimdNoIf((byte)'E', vecInput0Upper, vecInput0Lower).ShouldBe((byte)6);
+            bla.aa2iSimdNoIf((byte)'G', vecInput0Upper, vecInput0Lower).ShouldBe((byte)7);
+            bla.aa2iSimdNoIf((byte)'H', vecInput0Upper, vecInput0Lower).ShouldBe((byte)8);
+            bla.aa2iSimdNoIf((byte)'I', vecInput0Upper, vecInput0Lower).ShouldBe((byte)9);
+            bla.aa2iSimdNoIf((byte)'L', vecInput0Upper, vecInput0Lower).ShouldBe((byte)10);
+            bla.aa2iSimdNoIf((byte)'K', vecInput0Upper, vecInput0Lower).ShouldBe((byte)11);
+            bla.aa2iSimdNoIf((byte)'M', vecInput0Upper, vecInput0Lower).ShouldBe((byte)12);
+            bla.aa2iSimdNoIf((byte)'F', vecInput0Upper, vecInput0Lower).ShouldBe((byte)13);
+            bla.aa2iSimdNoIf((byte)'P', vecInput0Upper, vecInput0Lower).ShouldBe((byte)14);
+            bla.aa2iSimdNoIf((byte)'S', vecInput0Upper, vecInput0Lower).ShouldBe((byte)15);
+            bla.aa2iSimdNoIf((byte)'T', vecInput0Upper, vecInput0Lower).ShouldBe((byte)16);
+            bla.aa2iSimdNoIf((byte)'W', vecInput0Upper, vecInput0Lower).ShouldBe((byte)17);
+            bla.aa2iSimdNoIf((byte)'Y', vecInput0Upper, vecInput0Lower).ShouldBe((byte)18);
+            bla.aa2iSimdNoIf((byte)'V', vecInput0Upper, vecInput0Lower).ShouldBe((byte)19);
+            bla.aa2iSimdNoIf((byte)'X', vecInput0Upper, vecInput0Lower).ShouldBe(bla.ANY);
+            bla.aa2iSimdNoIf((byte)'J', vecInput0Upper, vecInput0Lower).ShouldBe(bla.ANY);
+            bla.aa2iSimdNoIf((byte)'O', vecInput0Upper, vecInput0Lower).ShouldBe(bla.ANY);
+            bla.aa2iSimdNoIf((byte)'U', vecInput0Upper, vecInput0Lower).ShouldBe((byte)4);
+            bla.aa2iSimdNoIf((byte)'B', vecInput0Upper, vecInput0Lower).ShouldBe((byte)3);
+            bla.aa2iSimdNoIf((byte)'Z', vecInput0Upper, vecInput0Lower).ShouldBe((byte)6);
+            bla.aa2iSimdNoIf((byte)' ', vecInput0Upper, vecInput0Lower).ShouldBe(unchecked((byte)-1));
+            bla.aa2iSimdNoIf((byte)'{', vecInput0Upper, vecInput0Lower).ShouldBe(unchecked((byte)-2));
+
+            bla.aa2iSimdNoIf((byte)'a', vecInput0Upper, vecInput0Lower).ShouldBe((byte)0);
+            bla.aa2iSimdNoIf((byte)'r', vecInput0Upper, vecInput0Lower).ShouldBe((byte)1);
+            bla.aa2iSimdNoIf((byte)'n', vecInput0Upper, vecInput0Lower).ShouldBe((byte)2);
+            bla.aa2iSimdNoIf((byte)'d', vecInput0Upper, vecInput0Lower).ShouldBe((byte)3);
+            bla.aa2iSimdNoIf((byte)'c', vecInput0Upper, vecInput0Lower).ShouldBe((byte)4);
+            bla.aa2iSimdNoIf((byte)'q', vecInput0Upper, vecInput0Lower).ShouldBe((byte)5);
+            bla.aa2iSimdNoIf((byte)'e', vecInput0Upper, vecInput0Lower).ShouldBe((byte)6);
+            bla.aa2iSimdNoIf((byte)'g', vecInput0Upper, vecInput0Lower).ShouldBe((byte)7);
+            bla.aa2iSimdNoIf((byte)'h', vecInput0Upper, vecInput0Lower).ShouldBe((byte)8);
+            bla.aa2iSimdNoIf((byte)'i', vecInput0Upper, vecInput0Lower).ShouldBe((byte)9);
+            bla.aa2iSimdNoIf((byte)'l', vecInput0Upper, vecInput0Lower).ShouldBe((byte)10);
+            bla.aa2iSimdNoIf((byte)'k', vecInput0Upper, vecInput0Lower).ShouldBe((byte)11);
+            bla.aa2iSimdNoIf((byte)'m', vecInput0Upper, vecInput0Lower).ShouldBe((byte)12);
+            bla.aa2iSimdNoIf((byte)'f', vecInput0Upper, vecInput0Lower).ShouldBe((byte)13);
+            bla.aa2iSimdNoIf((byte)'p', vecInput0Upper, vecInput0Lower).ShouldBe((byte)14);
+            bla.aa2iSimdNoIf((byte)'s', vecInput0Upper, vecInput0Lower).ShouldBe((byte)15);
+            bla.aa2iSimdNoIf((byte)'t', vecInput0Upper, vecInput0Lower).ShouldBe((byte)16);
+            bla.aa2iSimdNoIf((byte)'w', vecInput0Upper, vecInput0Lower).ShouldBe((byte)17);
+            bla.aa2iSimdNoIf((byte)'y', vecInput0Upper, vecInput0Lower).ShouldBe((byte)18);
+            bla.aa2iSimdNoIf((byte)'v', vecInput0Upper, vecInput0Lower).ShouldBe((byte)19);
+            bla.aa2iSimdNoIf((byte)'x', vecInput0Upper, vecInput0Lower).ShouldBe(bla.ANY);
+            bla.aa2iSimdNoIf((byte)'j', vecInput0Upper, vecInput0Lower).ShouldBe(bla.ANY);
+            bla.aa2iSimdNoIf((byte)'o', vecInput0Upper, vecInput0Lower).ShouldBe(bla.ANY);
+            bla.aa2iSimdNoIf((byte)'u', vecInput0Upper, vecInput0Lower).ShouldBe((byte)4);
+            bla.aa2iSimdNoIf((byte)'b', vecInput0Upper, vecInput0Lower).ShouldBe((byte)3);
+            bla.aa2iSimdNoIf((byte)'z', vecInput0Upper, vecInput0Lower).ShouldBe((byte)6);
+            bla.aa2iSimdNoIf((byte)' ', vecInput0Upper, vecInput0Lower).ShouldBe(unchecked((byte)-1));
+            bla.aa2iSimdNoIf((byte)'{', vecInput0Upper, vecInput0Lower).ShouldBe(unchecked((byte)-2));
+        }
     }
 }
