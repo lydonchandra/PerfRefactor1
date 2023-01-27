@@ -10,47 +10,127 @@
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Release-x64' ">
-      <PlatformTarget>x64</PlatformTarget>
-      <Optimize>true</Optimize>
+        <PlatformTarget>x64</PlatformTarget>
+        <Optimize>true</Optimize>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
-      <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="BenchmarkDotNet" Version="0.13.2" />
+        <PackageReference Include="BenchmarkDotNet" Version="0.13.2"/>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\DnaLib\DnaLib.csproj" />
+        <ProjectReference Include="..\DnaLib\DnaLib.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-      <Content Include="..\Data\gene-lg.fna">
-        <Link>Data\gene-lg.fna</Link>
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <Content Include="..\Data\gene-sm.fna">
-        <Link>Data\gene-sm.fna</Link>
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <Content Include="..\Data\gene-xl.fna">
-        <Link>Data\gene-xl.fna</Link>
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <Content Include="..\Data\protein-lg.fasta">
-        <Link>Data\protein-lg.fasta</Link>
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <Content Include="..\Data\protein-md.fasta">
-        <Link>Data\protein-md.fasta</Link>
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <Content Include="..\Data\protein-sm.fasta">
-        <Link>Data\protein-sm.fasta</Link>
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
+        <Content Include="..\Data\gene-lg.fna">
+            <Link>Data\gene-lg.fna</Link>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="..\Data\gene-sm.fna">
+            <Link>Data\gene-sm.fna</Link>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="..\Data\gene-xl.fna">
+            <Link>Data\gene-xl.fna</Link>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="..\Data\protein-kb100-worst.fasta">
+            <Link>Data\protein-kb100-worst.fasta</Link>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="..\Data\protein-kb100.fasta">
+            <Link>Data\protein-kb100.fasta</Link>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="..\Data\protein-kb1000.fasta">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <Link>Data\protein-kb1000.fasta</Link>
+        </Content>
+        <Content Include="..\Data\protein-kb1200.fasta">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <Link>Data\protein-kb1200.fasta</Link>
+        </Content>
+        <Content Include="..\Data\protein-kb1500.fasta">
+            <Link>Data\protein-kb1500.fasta</Link>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="..\Data\protein-kb200-worst.fasta">
+            <Link>Data\protein-kb200-worst.fasta</Link>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="..\Data\protein-kb200.fasta">
+            <Link>Data\protein-kb200.fasta</Link>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="..\Data\protein-kb2000-worst.fasta">
+            <Link>Data\protein-kb2000-worst.fasta</Link>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="..\Data\protein-kb2000.fasta">
+            <Link>Data\protein-kb2000.fasta</Link>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="..\Data\protein-kb3000.fasta">
+            <Link>Data\protein-kb3000.fasta</Link>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="..\Data\protein-kb400-worst.fasta">
+            <Link>Data\protein-kb400-worst.fasta</Link>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="..\Data\protein-kb400.fasta">
+            <Link>Data\protein-kb400.fasta</Link>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="..\Data\protein-kb4000.fasta">
+            <Link>Data\protein-kb4000.fasta</Link>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="..\Data\protein-kb4000-worst.fasta">
+            <Link>Data\protein-kb4000-worst.fasta</Link>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="..\Data\protein-kb5000.fasta">
+            <Link>Data\protein-kb5000.fasta</Link>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="..\Data\protein-kb5000-worst.fasta">
+            <Link>Data\protein-kb5000-worst.fasta</Link>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="..\Data\protein-kb600.fasta">
+            <Link>Data\protein-kb600.fasta</Link>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="..\Data\protein-kb800-worst.fasta">
+            <Link>Data\protein-kb800-worst.fasta</Link>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="..\Data\protein-kb800.fasta">
+            <Link>Data\protein-kb800.fasta</Link>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="..\Data\protein-lg.fasta">
+            <Link>Data\protein-lg.fasta</Link>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="..\Data\protein-md.fasta">
+            <Link>Data\protein-md.fasta</Link>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="..\Data\protein-sm.fasta">
+            <Link>Data\protein-sm.fasta</Link>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="..\Data\protein-sm.fasta">
+            <Link>Data\protein-sm.fasta</Link>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
     </ItemGroup>
 
 </Project>

@@ -25,6 +25,22 @@ public enum DataSize
     xl
 }
 
+public enum DataSizeKb
+{
+    kb100,
+    kb200,
+    kb400,
+    kb600,
+    kb800,
+    kb1000,
+    kb1200,
+    kb1500,
+    kb2000,
+    kb3000,
+    kb4000,
+    kb5000
+}
+
 [MemoryDiagnoser]
 [HideColumns("Error", "RatioSD")]
 [SimpleJob(1, 1, 2)]
@@ -213,10 +229,12 @@ public class ProteinCompressBenchmark
 {
     public Dictionary<string, byte[]> dataBytes = new();
 
-    [Params(DataSize.sm, DataSize.md, DataSize.lg)]
-    public DataSize dataSize;
+    [Params(DataSizeKb.kb100, DataSizeKb.kb200, DataSizeKb.kb400, DataSizeKb.kb800, DataSizeKb.kb2000,
+        DataSizeKb.kb4000, DataSizeKb.kb5000)]
+    public DataSizeKb dataSize;
 
-    private string _path => "Data/protein-" + dataSize + ".fasta";
+    private string _path => $"Data/protein-{dataSize}.fasta";
+    // private string _path => $"Data/protein-{dataSize}-worst.fasta";
 
     [GlobalSetup]
     public void SetupData()
@@ -227,7 +245,7 @@ public class ProteinCompressBenchmark
         dataBytes.Add(_path, Encoding.UTF8.GetBytes(content));
     }
 
-    [Benchmark]
+    [Benchmark(Baseline = true)]
     public byte[] CompressSimd()
     {
         return bla.CompressSimd(dataBytes[_path]);
@@ -258,11 +276,11 @@ public class ProteinCompressBenchmark
     //     return CompressInlined(dataBytes[_path]);
     // }
     //
-    [Benchmark(Baseline = true)]
-    public byte[] Compress()
-    {
-        return bla.Compress(dataBytes[_path]);
-    }
+    // [Benchmark(Baseline = true)]
+    // public byte[] Compress()
+    // {
+    //     return bla.Compress(dataBytes[_path]);
+    // }
 }
 
 
