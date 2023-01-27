@@ -233,8 +233,8 @@ public class ProteinCompressBenchmark
         DataSizeKb.kb4000, DataSizeKb.kb5000)]
     public DataSizeKb dataSize;
 
-    private string _path => $"Data/protein-{dataSize}.fasta";
-    // private string _path => $"Data/protein-{dataSize}-worst.fasta";
+    // private string _path => $"Data/protein-{dataSize}.fasta";
+    private string _path => $"Data/protein-{dataSize}-worst.fasta";
 
     [GlobalSetup]
     public void SetupData()

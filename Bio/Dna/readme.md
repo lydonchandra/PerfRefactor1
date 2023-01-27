@@ -2,32 +2,36 @@
 
 ## Added CompressSimdHarold
 
-### Irregular Data Range
+ ### Slow Data Scenario
 
-| Method             | dataSize |       Mean |    StdDev | Ratio |     Gen0 |     Gen1 |     Gen2 |   Allocated | Alloc Ratio |
-|--------------------|----------|-----------:|----------:|------:|---------:|---------:|---------:|------------:|------------:|
-| CompressSimdHarold | kb100    |   113.0 us |   1.61 us |  0.84 |        - |        - |        - |   299.24 KB |        3.00 |
-| CompressSimd       | kb100    |   135.0 us |   2.45 us |  1.00 |  32.2266 |  32.2266 |  32.2266 |    99.87 KB |        1.00 |
-|                    |          |            |           |       |          |          |          |             |             |
-| CompressSimdHarold | kb200    |   213.2 us |   0.38 us |  0.80 |        - |        - |        - |    598.3 KB |        3.00 |
-| CompressSimd       | kb200    |   265.7 us |   1.54 us |  1.00 |  62.0117 |  62.0117 |  62.0117 |    199.6 KB |        1.00 |
-|                    |          |            |           |       |          |          |          |             |             |
-| CompressSimdHarold | kb400    |   407.0 us |   0.98 us |  0.75 |        - |        - |        - |  1196.43 KB |        3.00 |
-| CompressSimd       | kb400    |   539.4 us |  10.14 us |  1.00 | 124.0234 | 124.0234 | 124.0234 |   399.07 KB |        1.00 |
-|                    |          |            |           |       |          |          |          |             |             |
-| CompressSimdHarold | kb800    |   808.5 us |   2.81 us |  0.74 |        - |        - |        - |  2392.66 KB |        3.00 |
-| CompressSimd       | kb800    | 1,098.6 us |   3.73 us |  1.00 | 197.2656 | 197.2656 | 197.2656 |   797.92 KB |        1.00 |
-|                    |          |            |           |       |          |          |          |             |             |
-| CompressSimdHarold | kb2000   | 2,221.4 us |   0.05 us |  0.79 |        - |        - |        - |  5981.39 KB |        3.00 |
-| CompressSimd       | kb2000   | 2,800.8 us |   1.96 us |  1.00 | 324.2188 | 324.2188 | 324.2188 |  1994.35 KB |        1.00 |
-|                    |          |            |           |       |          |          |          |             |             |
-| CompressSimdHarold | kb4000   | 4,693.0 us | 101.70 us |  0.76 |        - |        - |        - | 11962.57 KB |        3.00 |
-| CompressSimd       | kb4000   | 6,146.2 us |  13.30 us |  1.00 | 156.2500 | 156.2500 | 156.2500 |  3987.84 KB |        1.00 |
-|                    |          |            |           |       |          |          |          |             |             |
-| CompressSimdHarold | kb5000   | 5,643.5 us |  21.11 us |  0.76 |        - |        - |        - | 14953.18 KB |        3.00 |
-| CompressSimd       | kb5000   | 7,455.5 us |  44.29 us |  1.00 | 156.2500 | 156.2500 | 156.2500 |  4984.71 KB |        1.00 |
+Data looks like this `_xjoubzxjoubz-._xjoubz-._xjoubz` repeated up to `kb100` or `kbXXX` dataSize
 
-### Regular Data Range
+| Method             | dataSize |        Mean |    StdDev | Ratio |     Gen0 |     Gen1 |     Gen2 |   Allocated | Alloc Ratio |
+|--------------------|----------|------------:|----------:|------:|---------:|---------:|---------:|------------:|------------:|
+| CompressSimdHarold | kb100    |    111.5 us |   1.71 us |  0.42 |        - |        - |        - |   293.13 KB |        3.00 |
+| CompressSimd       | kb100    |    268.1 us |   5.37 us |  1.00 |  30.7617 |  30.7617 |  30.7617 |    97.83 KB |        1.00 |
+|                    |          |             |           |       |          |          |          |             |             |
+| CompressSimdHarold | kb200    |    212.1 us |   1.41 us |  0.43 |        - |        - |        - |   586.07 KB |        3.00 |
+| CompressSimd       | kb200    |    492.2 us |   0.83 us |  1.00 |  61.5234 |  61.5234 |  61.5234 |   195.52 KB |        1.00 |
+|                    |          |             |           |       |          |          |          |             |             |
+| CompressSimdHarold | kb400    |    416.0 us |   0.51 us |  0.42 |        - |        - |        - |  1171.94 KB |        3.00 |
+| CompressSimd       | kb400    |    983.3 us |   1.25 us |  1.00 | 123.0469 | 123.0469 | 123.0469 |   390.91 KB |        1.00 |
+|                    |          |             |           |       |          |          |          |             |             |
+| CompressSimdHarold | kb800    |    830.8 us |   0.05 us |  0.41 |        - |        - |        - |   2343.7 KB |        3.00 |
+| CompressSimd       | kb800    |  2,016.7 us |  31.32 us |  1.00 | 195.3125 | 195.3125 | 195.3125 |    781.6 KB |        1.00 |
+|                    |          |             |           |       |          |          |          |             |             |
+| CompressSimdHarold | kb2000   |  2,317.6 us |   8.57 us |  0.46 |        - |        - |        - |  5858.97 KB |        3.00 |
+| CompressSimd       | kb2000   |  5,075.2 us |   8.84 us |  1.00 | 320.3125 | 320.3125 | 320.3125 |  1953.54 KB |        1.00 |
+|                    |          |             |           |       |          |          |          |             |             |
+| CompressSimdHarold | kb4000   |  4,632.4 us |  44.61 us |  0.45 |        - |        - |        - | 11717.77 KB |        3.00 |
+| CompressSimd       | kb4000   | 10,376.7 us | 397.22 us |  1.00 | 296.8750 | 296.8750 | 296.8750 |  3906.46 KB |        1.00 |
+|                    |          |             |           |       |          |          |          |             |             |
+| CompressSimdHarold | kb5000   |  5,826.3 us |   8.34 us |  0.46 |        - |        - |        - | 14647.18 KB |        3.00 |
+| CompressSimd       | kb5000   | 12,640.1 us | 219.85 us |  1.00 | 296.8750 | 296.8750 | 296.8750 |  4882.93 KB |        1.00 |
+
+### Typical Data Scenario
+
+Data looks like `MTTQAPTFTQPLQSVVVLEGSTATFEAHISGFPVPEVSWFRDGQVISTSTLPGVQ` repeated up to `kb100` or `kbXXX` dataSize
 
 | Method             | dataSize |        Mean |    StdDev | Ratio |     Gen0 |     Gen1 |     Gen2 |   Allocated | Alloc Ratio |
 |--------------------|----------|------------:|----------:|------:|---------:|---------:|---------:|------------:|------------:|
