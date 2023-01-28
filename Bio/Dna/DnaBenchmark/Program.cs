@@ -28,17 +28,29 @@ public enum DataSize
 public enum DataSizeKb
 {
     kb100,
+    kb100edgeCase,
     kb200,
+    kb200edgeCase,
     kb400,
+    kb400edgeCase,
     kb600,
+    kb600edgeCase,
     kb800,
+    kb800edgeCase,
     kb1000,
+    kb1000edgeCase,
     kb1200,
+    kb1200edgeCase,
     kb1500,
+    kb1500edgeCase,
     kb2000,
+    kb2000edgeCase,
     kb3000,
+    kb3000edgeCase,
     kb4000,
-    kb5000
+    kb4000edgeCase,
+    kb5000,
+    kb5000edgeCase
 }
 
 [MemoryDiagnoser]
@@ -229,12 +241,17 @@ public class ProteinCompressBenchmark
 {
     public Dictionary<string, byte[]> dataBytes = new();
 
-    [Params(DataSizeKb.kb100, DataSizeKb.kb200, DataSizeKb.kb400, DataSizeKb.kb800, DataSizeKb.kb2000,
-        DataSizeKb.kb4000, DataSizeKb.kb5000)]
+    [Params(DataSizeKb.kb100, DataSizeKb.kb100edgeCase,
+        DataSizeKb.kb200, DataSizeKb.kb200edgeCase,
+        DataSizeKb.kb400, DataSizeKb.kb400edgeCase,
+        DataSizeKb.kb800, DataSizeKb.kb800edgeCase,
+        DataSizeKb.kb2000, DataSizeKb.kb2000edgeCase,
+        DataSizeKb.kb4000, DataSizeKb.kb4000edgeCase,
+        DataSizeKb.kb5000, DataSizeKb.kb5000edgeCase)]
     public DataSizeKb dataSize;
 
-    // private string _path => $"Data/protein-{dataSize}.fasta";
-    private string _path => $"Data/protein-{dataSize}-worst.fasta";
+    private string _path => $"Data/protein-{dataSize}.fasta";
+    // private string _path => $"Data/protein-{dataSize}-worst.fasta";
 
     [GlobalSetup]
     public void SetupData()
@@ -245,7 +262,7 @@ public class ProteinCompressBenchmark
         dataBytes.Add(_path, Encoding.UTF8.GetBytes(content));
     }
 
-    [Benchmark(Baseline = true)]
+    [Benchmark]
     public byte[] CompressSimd()
     {
         return bla.CompressSimd(dataBytes[_path]);
@@ -276,11 +293,11 @@ public class ProteinCompressBenchmark
     //     return CompressInlined(dataBytes[_path]);
     // }
     //
-    // [Benchmark(Baseline = true)]
-    // public byte[] Compress()
-    // {
-    //     return bla.Compress(dataBytes[_path]);
-    // }
+    [Benchmark(Baseline = true)]
+    public byte[] Compress()
+    {
+        return bla.Compress(dataBytes[_path]);
+    }
 }
 
 

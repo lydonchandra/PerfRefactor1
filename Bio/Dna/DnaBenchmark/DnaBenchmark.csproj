@@ -39,8 +39,8 @@
             <Link>Data\gene-xl.fna</Link>
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
-        <Content Include="..\Data\protein-kb100-worst.fasta">
-            <Link>Data\protein-kb100-worst.fasta</Link>
+        <Content Include="..\Data\protein-kb100edgeCase.fasta">
+            <Link>Data\protein-kb100edgeCase.fasta</Link>
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
         <Content Include="..\Data\protein-kb100.fasta">
@@ -59,16 +59,16 @@
             <Link>Data\protein-kb1500.fasta</Link>
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
-        <Content Include="..\Data\protein-kb200-worst.fasta">
-            <Link>Data\protein-kb200-worst.fasta</Link>
+        <Content Include="..\Data\protein-kb200edgeCase.fasta">
+            <Link>Data\protein-kb200edgeCase.fasta</Link>
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
         <Content Include="..\Data\protein-kb200.fasta">
             <Link>Data\protein-kb200.fasta</Link>
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
-        <Content Include="..\Data\protein-kb2000-worst.fasta">
-            <Link>Data\protein-kb2000-worst.fasta</Link>
+        <Content Include="..\Data\protein-kb2000edgeCase.fasta">
+            <Link>Data\protein-kb2000edgeCase.fasta</Link>
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
         <Content Include="..\Data\protein-kb2000.fasta">
@@ -79,8 +79,8 @@
             <Link>Data\protein-kb3000.fasta</Link>
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
-        <Content Include="..\Data\protein-kb400-worst.fasta">
-            <Link>Data\protein-kb400-worst.fasta</Link>
+        <Content Include="..\Data\protein-kb400edgeCase.fasta">
+            <Link>Data\protein-kb400edgeCase.fasta</Link>
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
         <Content Include="..\Data\protein-kb400.fasta">
@@ -91,24 +91,24 @@
             <Link>Data\protein-kb4000.fasta</Link>
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
-        <Content Include="..\Data\protein-kb4000-worst.fasta">
-            <Link>Data\protein-kb4000-worst.fasta</Link>
+        <Content Include="..\Data\protein-kb4000edgeCase.fasta">
+            <Link>Data\protein-kb4000edgeCase.fasta</Link>
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
         <Content Include="..\Data\protein-kb5000.fasta">
             <Link>Data\protein-kb5000.fasta</Link>
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
-        <Content Include="..\Data\protein-kb5000-worst.fasta">
-            <Link>Data\protein-kb5000-worst.fasta</Link>
+        <Content Include="..\Data\protein-kb5000edgeCase.fasta">
+            <Link>Data\protein-kb5000edgeCase.fasta</Link>
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
         <Content Include="..\Data\protein-kb600.fasta">
             <Link>Data\protein-kb600.fasta</Link>
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
-        <Content Include="..\Data\protein-kb800-worst.fasta">
-            <Link>Data\protein-kb800-worst.fasta</Link>
+        <Content Include="..\Data\protein-kb800edgeCase.fasta">
+            <Link>Data\protein-kb800edgeCase.fasta</Link>
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
         <Content Include="..\Data\protein-kb800.fasta">
