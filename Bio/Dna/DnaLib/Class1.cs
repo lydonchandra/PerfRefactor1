@@ -19,9 +19,30 @@ public static class bla
     public static unsafe void* proteinLutLower =
         "arndcqeghilkmfpstwyv;;;;;;;;;;;;"u8.ToArray().AsMemory().Pin().Pointer;
 
+    public static unsafe void* proteinLutUpper2 =
+        "ARNDCQEGHILKMFPSTWYVXJOUBZ-._"u8.ToArray().AsMemory().Pin().Pointer;
+
+    public static unsafe void* proteinLutLower2 =
+        "arndcqeghilkmfpstwyvxjoubz-._"u8.ToArray().AsMemory().Pin().Pointer;
+
+    // public static unsafe void* proteinMap =
+    public static sbyte[] proteinMap =
+        new sbyte[]
+        {
+            0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 20, 20, 4, 3, 6, 21, 21, 21, -1,
+            -1, -1
+        };
+
+    // casesLow:
+    // db  'arndcqeghilkmfpstwyvxjoubz-._', 32, 0, 0
+    // casesHi:
+    // db  'ARNDCQEGHILKMFPSTWYVXJOUBZ-._', 0, 0, 0
+    // mapped:
+    // db  0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,20,20,4,3,6,21,21,21,-1,-1,-1
+
     public static readonly unsafe Vector256<byte> vecInput0 = Vector256.Load((byte*)proteinLutUpper);
 
-    [MethodImpl(MethodImplOptions.AggressiveOptimization)]
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     public static byte[] CompressSimdInlined(ReadOnlySpan<byte> proteinSeq)
     {
         unsafe
@@ -105,6 +126,23 @@ public static class bla
     }
 
     [MethodImpl(MethodImplOptions.AggressiveOptimization)]
+    public static byte[] CompressSimdNoSwitch(ReadOnlySpan<byte> proteinSeq)
+    {
+        // ReSharper disable once RedundantUnsafeContext
+        unsafe
+        {
+            var results = new byte[proteinSeq.Length];
+            Vector256<byte> vecInput0Inner = Vector256.Load((byte*)proteinLutUpper2);
+            var proteinMap = bla.proteinMap;
+
+            for (var index = 0; index < proteinSeq.Length; index++)
+                results[index] = aa2iSimdNoSwitch(proteinSeq[index], vecInput0Inner, proteinMap);
+
+            return results;
+        }
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     public static byte[] CompressSimdNoIf(ReadOnlySpan<byte> proteinSeq)
     {
         // ReSharper disable once RedundantUnsafeContext
@@ -120,7 +158,7 @@ public static class bla
         }
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveOptimization)]
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     public static byte[] CompressSimdLutStatic(ReadOnlySpan<byte> proteinSeq)
     {
         // ReSharper disable once RedundantUnsafeContext
@@ -140,7 +178,6 @@ public static class bla
     [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     public static byte aa2iSimd(byte protAa, Vector256<byte> vecInput1)
     {
-        // if (protAa is >= (byte)'a' and <= (byte)'z') protAa = (byte)(protAa + (byte)'A' - (byte)'a');
         if (protAa >= (byte)'a') protAa = (byte)(protAa & ~x);
 
         Vector256<byte> vecProtAa = Vector256.Create(protAa);
@@ -185,6 +222,56 @@ public static class bla
         }
 
         return (byte)firstEqualIndex;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
+    public static byte aa2iSimdNoSwitch(byte protAa, Vector256<byte> vecInput1, sbyte[] proteinMap)
+    {
+        if (protAa >= (byte)'a') protAa = (byte)(protAa & ~x);
+
+        Vector256<byte> vecProtAa = Vector256.Create(protAa);
+
+        // Compare bytes for equality, equal = 0xFF = 255, not equal = 0
+        Vector256<byte> eq = Avx2.CompareEqual(vecInput1, vecProtAa);
+        // Move comparison results into a bitmap of 32 bits
+
+        var bmp = unchecked((uint)Avx2.MoveMask(eq));
+        // Find index of the first byte in the vectors which compared equal
+        // The method will return 32 if none of the bytes compared equal
+        var firstEqualIndex = BitOperations.TrailingZeroCount(bmp);
+        if (firstEqualIndex != 32) return (byte)proteinMap[firstEqualIndex];
+        return unchecked((byte)-1);
+        //return (byte)proteinMap[firstEqualIndex];
+        // switch (protAa)
+        // {
+        //     case (byte)'X':
+        //     case (byte)'J':
+        //     case (byte)'O':
+        //         firstEqualIndex = ANY;
+        //         break;
+        //     case (byte)'U':
+        //         firstEqualIndex = 4; //Selenocystein -> Cystein
+        //         break;
+        //     case (byte)'B':
+        //         firstEqualIndex = 3; //D (or N)
+        //         break;
+        //     case (byte)'Z':
+        //         firstEqualIndex = 6; //E (or Q)
+        //         break;
+        //     case (byte)'-':
+        //     case (byte)'.':
+        //     case (byte)'_':
+        //         firstEqualIndex = GAP;
+        //         break;
+        //     default:
+        //         if (protAa is >= 0 and <= 32)
+        //             firstEqualIndex = unchecked((byte)-1);
+        //         else
+        //             firstEqualIndex = unchecked((byte)-2);
+        //         break;
+        // }
+        //
+        // return (byte)firstEqualIndex;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
@@ -387,7 +474,7 @@ public static class bla
         return (byte)firstEqualIndex;
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     public static byte aa2i(byte a)
     {
         if (a is >= (byte)'a' and <= (byte)'z') a = (byte)(a + (byte)'A' - (byte)'a');
@@ -430,7 +517,7 @@ public static class bla
         }
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveOptimization)]
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     public static byte[] Compress(ReadOnlySpan<byte> proteinSeq)
     {
         var results = new byte[proteinSeq.Length];

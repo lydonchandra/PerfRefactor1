@@ -2,59 +2,87 @@
 
 ## Added CompressSimdHarold
 
- ### Slow Data Scenario
+### Edge case scenarios
 
-Data looks like this `_xjoubzxjoubz-._xjoubz-._xjoubz` repeated up to `kb100` or `kbXXX` dataSize
+* Data looks like this `_xjoubzxjoubz-._xjoubz-._xjoubz` repeated up to `kb100` or `kbXXX` dataSize
 
-| Method             | dataSize |        Mean |    StdDev | Ratio |     Gen0 |     Gen1 |     Gen2 |   Allocated | Alloc Ratio |
-|--------------------|----------|------------:|----------:|------:|---------:|---------:|---------:|------------:|------------:|
-| CompressSimdHarold | kb100    |    111.5 us |   1.71 us |  0.42 |        - |        - |        - |   293.13 KB |        3.00 |
-| CompressSimd       | kb100    |    268.1 us |   5.37 us |  1.00 |  30.7617 |  30.7617 |  30.7617 |    97.83 KB |        1.00 |
-|                    |          |             |           |       |          |          |          |             |             |
-| CompressSimdHarold | kb200    |    212.1 us |   1.41 us |  0.43 |        - |        - |        - |   586.07 KB |        3.00 |
-| CompressSimd       | kb200    |    492.2 us |   0.83 us |  1.00 |  61.5234 |  61.5234 |  61.5234 |   195.52 KB |        1.00 |
-|                    |          |             |           |       |          |          |          |             |             |
-| CompressSimdHarold | kb400    |    416.0 us |   0.51 us |  0.42 |        - |        - |        - |  1171.94 KB |        3.00 |
-| CompressSimd       | kb400    |    983.3 us |   1.25 us |  1.00 | 123.0469 | 123.0469 | 123.0469 |   390.91 KB |        1.00 |
-|                    |          |             |           |       |          |          |          |             |             |
-| CompressSimdHarold | kb800    |    830.8 us |   0.05 us |  0.41 |        - |        - |        - |   2343.7 KB |        3.00 |
-| CompressSimd       | kb800    |  2,016.7 us |  31.32 us |  1.00 | 195.3125 | 195.3125 | 195.3125 |    781.6 KB |        1.00 |
-|                    |          |             |           |       |          |          |          |             |             |
-| CompressSimdHarold | kb2000   |  2,317.6 us |   8.57 us |  0.46 |        - |        - |        - |  5858.97 KB |        3.00 |
-| CompressSimd       | kb2000   |  5,075.2 us |   8.84 us |  1.00 | 320.3125 | 320.3125 | 320.3125 |  1953.54 KB |        1.00 |
-|                    |          |             |           |       |          |          |          |             |             |
-| CompressSimdHarold | kb4000   |  4,632.4 us |  44.61 us |  0.45 |        - |        - |        - | 11717.77 KB |        3.00 |
-| CompressSimd       | kb4000   | 10,376.7 us | 397.22 us |  1.00 | 296.8750 | 296.8750 | 296.8750 |  3906.46 KB |        1.00 |
-|                    |          |             |           |       |          |          |          |             |             |
-| CompressSimdHarold | kb5000   |  5,826.3 us |   8.34 us |  0.46 |        - |        - |        - | 14647.18 KB |        3.00 |
-| CompressSimd       | kb5000   | 12,640.1 us | 219.85 us |  1.00 | 296.8750 | 296.8750 | 296.8750 |  4882.93 KB |        1.00 |
+### Typical scenario
 
-### Typical Data Scenario
+* Data looks like `MTTQAPTFTQPLQSVVVLEGSTATFEAHISGFPVPEVSWFRDGQVISTSTLPGVQ` repeated up to `kb100` or `kbXXX` dataSize
 
-Data looks like `MTTQAPTFTQPLQSVVVLEGSTATFEAHISGFPVPEVSWFRDGQVISTSTLPGVQ` repeated up to `kb100` or `kbXXX` dataSize
+### Results:
 
-| Method             | dataSize |        Mean |    StdDev | Ratio |     Gen0 |     Gen1 |     Gen2 |   Allocated | Alloc Ratio |
-|--------------------|----------|------------:|----------:|------:|---------:|---------:|---------:|------------:|------------:|
-| CompressSimd       | kb100    |    95.25 us |  0.181 us |  1.00 |  32.2266 |  32.2266 |  32.2266 |   100.81 KB |        1.00 |
-| CompressSimdHarold | kb100    |   111.73 us |  1.153 us |  1.17 |        - |        - |        - |   302.09 KB |        3.00 |
-|                    |          |             |           |       |          |          |          |             |             |
-| CompressSimd       | kb200    |   189.16 us |  0.080 us |  1.00 |  62.2559 |  62.2559 |  62.2559 |   201.49 KB |        1.00 |
-| CompressSimdHarold | kb200    |   210.98 us |  1.342 us |  1.12 |        - |        - |        - |   603.98 KB |        3.00 |
-|                    |          |             |           |       |          |          |          |             |             |
-| CompressSimd       | kb400    |   382.53 us |  1.319 us |  1.00 | 124.5117 | 124.5117 | 124.5117 |   402.84 KB |        1.00 |
-| CompressSimdHarold | kb400    |   412.29 us |  0.749 us |  1.08 |        - |        - |        - |  1207.78 KB |        3.00 |
-|                    |          |             |           |       |          |          |          |             |             |
-| CompressSimd       | kb800    |   795.75 us |  1.572 us |  1.00 | 199.2188 | 199.2188 | 199.2188 |   805.49 KB |        1.00 |
-| CompressSimdHarold | kb800    |   812.47 us |  0.119 us |  1.02 |        - |        - |        - |   2415.4 KB |        3.00 |
-|                    |          |             |           |       |          |          |          |             |             |
-| CompressSimd       | kb2000   | 2,047.14 us |  6.058 us |  1.00 | 324.2188 | 324.2188 | 324.2188 |   2013.3 KB |        1.00 |
-| CompressSimdHarold | kb2000   | 2,242.26 us |  9.284 us |  1.10 |        - |        - |        - |  6038.26 KB |        3.00 |
-|                    |          |             |           |       |          |          |          |             |             |
-| CompressSimdHarold | kb4000   | 4,536.82 us |  5.494 us |  0.98 |        - |        - |        - | 12076.35 KB |        3.00 |
-| CompressSimd       | kb4000   | 4,640.09 us | 23.321 us |  1.00 | 156.2500 | 156.2500 | 156.2500 |  4025.75 KB |        1.00 |
-|                    |          |             |           |       |          |          |          |             |             |
-| CompressSimd       | kb5000   | 5,536.27 us | 74.628 us |  1.00 | 156.2500 | 156.2500 | 156.2500 |  5032.11 KB |        1.00 |
-| CompressSimdHarold | kb5000   | 5,677.87 us | 14.282 us |  1.03 |        - |        - |        - |  15095.4 KB |        3.00 |
+| Method               | dataSize       |         Mean |     StdDev | Ratio |     Gen0 |     Gen1 |     Gen2 |   Allocated | Alloc Ratio |
+|----------------------|----------------|-------------:|-----------:|------:|---------:|---------:|---------:|------------:|------------:|
+| CompressSimd         | kb100          |     96.38 us |   0.047 us |  0.14 |  32.2266 |  32.2266 |  32.2266 |   100.83 KB |        1.00 |
+| CompressSimdHarold   | kb100          |    111.72 us |   1.036 us |  0.16 |        - |        - |        - |   302.09 KB |        3.00 |
+| CompressSimdNoSwitch | kb100          |    136.61 us |   0.582 us |  0.19 |  32.2266 |  32.2266 |  32.2266 |   100.83 KB |        1.00 |
+| Compress             | kb100          |    703.66 us |   0.377 us |  1.00 |  32.2266 |  32.2266 |  32.2266 |   100.83 KB |        1.00 |
+|                      |                |              |            |       |          |          |          |             |             |
+| CompressSimdHarold   | kb100edgeCase  |    109.41 us |   1.877 us |  0.74 |        - |        - |        - |   293.13 KB |        3.00 |
+| CompressSimdNoSwitch | kb100edgeCase  |    118.71 us |   0.042 us |  0.80 |  31.1279 |  31.1279 |  31.1279 |    97.85 KB |        1.00 |
+| Compress             | kb100edgeCase  |    147.67 us |   0.971 us |  1.00 |  31.0059 |  31.0059 |  31.0059 |    97.85 KB |        1.00 |
+| CompressSimd         | kb100edgeCase  |    238.95 us |   0.230 us |  1.62 |  31.0059 |  31.0059 |  31.0059 |    97.85 KB |        1.00 |
+|                      |                |              |            |       |          |          |          |             |             |
+| CompressSimd         | kb200          |    190.16 us |   0.133 us |  0.14 |  62.2559 |  62.2559 |  62.2559 |   201.54 KB |        1.00 |
+| CompressSimdHarold   | kb200          |    213.86 us |   0.595 us |  0.15 |        - |        - |        - |   603.99 KB |        3.00 |
+| CompressSimdNoSwitch | kb200          |    268.31 us |   1.992 us |  0.19 |  62.0117 |  62.0117 |  62.0117 |   201.54 KB |        1.00 |
+| Compress             | kb200          |  1,394.37 us |   3.090 us |  1.00 |  60.5469 |  60.5469 |  60.5469 |   201.54 KB |        1.00 |
+|                      |                |              |            |       |          |          |          |             |             |
+| CompressSimdHarold   | kb200edgeCase  |    206.98 us |   0.031 us |  0.70 |        - |        - |        - |   586.07 KB |        3.00 |
+| CompressSimdNoSwitch | kb200edgeCase  |    236.94 us |   1.061 us |  0.80 |  62.2559 |  62.2559 |  62.2559 |   195.57 KB |        1.00 |
+| Compress             | kb200edgeCase  |    295.67 us |   0.189 us |  1.00 |  62.0117 |  62.0117 |  62.0117 |   195.57 KB |        1.00 |
+| CompressSimd         | kb200edgeCase  |    476.61 us |   2.413 us |  1.61 |  62.0117 |  62.0117 |  62.0117 |   195.57 KB |        1.00 |
+|                      |                |              |            |       |          |          |          |             |             |
+| CompressSimd         | kb400          |    385.58 us |   0.879 us |  0.14 | 124.5117 | 124.5117 | 124.5117 |   402.95 KB |        1.00 |
+| CompressSimdHarold   | kb400          |    415.25 us |   3.327 us |  0.15 |        - |        - |        - |  1207.78 KB |        3.00 |
+| CompressSimdNoSwitch | kb400          |    533.62 us |   1.721 us |  0.19 | 124.0234 | 124.0234 | 124.0234 |   402.95 KB |        1.00 |
+| Compress             | kb400          |  2,789.99 us |   3.676 us |  1.00 | 121.0938 | 121.0938 | 121.0938 |   402.95 KB |        1.00 |
+|                      |                |              |            |       |          |          |          |             |             |
+| CompressSimdHarold   | kb400edgeCase  |    402.68 us |   1.178 us |  0.69 |        - |        - |        - |  1171.94 KB |        3.00 |
+| CompressSimdNoSwitch | kb400edgeCase  |    480.21 us |   5.765 us |  0.82 | 124.5117 | 124.5117 | 124.5117 |   391.01 KB |        1.00 |
+| Compress             | kb400edgeCase  |    586.46 us |   0.475 us |  1.00 | 124.0234 | 124.0234 | 124.0234 |   391.01 KB |        1.00 |
+| CompressSimd         | kb400edgeCase  |    953.84 us |   1.557 us |  1.63 | 124.0234 | 124.0234 | 124.0234 |   391.01 KB |        1.00 |
+|                      |                |              |            |       |          |          |          |             |             |
+| CompressSimd         | kb800          |    798.08 us |   5.157 us |  0.14 | 199.2188 | 199.2188 | 199.2188 |   805.65 KB |        1.00 |
+| CompressSimdHarold   | kb800          |    830.61 us |   8.917 us |  0.15 |        - |        - |        - |   2415.4 KB |        3.00 |
+| CompressSimdNoSwitch | kb800          |  1,072.92 us |   0.636 us |  0.19 | 197.2656 | 197.2656 | 197.2656 |   805.65 KB |        1.00 |
+| Compress             | kb800          |  5,607.25 us |  12.128 us |  1.00 | 195.3125 | 195.3125 | 195.3125 |   805.65 KB |        1.00 |
+|                      |                |              |            |       |          |          |          |             |             |
+| CompressSimdHarold   | kb800edgeCase  |    802.88 us |   2.192 us |  0.60 |        - |        - |        - |   2343.7 KB |        3.00 |
+| CompressSimdNoSwitch | kb800edgeCase  |    990.47 us |   1.716 us |  0.74 | 197.2656 | 197.2656 | 197.2656 |   781.76 KB |        1.00 |
+| Compress             | kb800edgeCase  |  1,338.01 us |   2.244 us |  1.00 | 197.2656 | 197.2656 | 197.2656 |   781.76 KB |        1.00 |
+| CompressSimd         | kb800edgeCase  |  1,958.71 us |   6.568 us |  1.46 | 195.3125 | 195.3125 | 195.3125 |   781.76 KB |        1.00 |
+|                      |                |              |            |       |          |          |          |             |             |
+| CompressSimd         | kb2000         |  2,066.46 us |  19.052 us |  0.15 | 324.2188 | 324.2188 | 324.2188 |  2013.56 KB |        1.00 |
+| CompressSimdHarold   | kb2000         |  2,265.57 us |   1.035 us |  0.16 |        - |        - |        - |  6038.26 KB |        3.00 |
+| CompressSimdNoSwitch | kb2000         |  2,819.18 us |  33.320 us |  0.20 | 324.2188 | 324.2188 | 324.2188 |  2013.56 KB |        1.00 |
+| Compress             | kb2000         | 14,021.96 us |  52.383 us |  1.00 | 296.8750 | 296.8750 | 296.8750 |  2013.53 KB |        1.00 |
+|                      |                |              |            |       |          |          |          |             |             |
+| CompressSimdHarold   | kb2000edgeCase |  2,203.49 us |   1.196 us |  0.65 |        - |        - |        - |  5858.98 KB |        3.00 |
+| CompressSimdNoSwitch | kb2000edgeCase |  2,533.21 us |   3.103 us |  0.74 | 324.2188 | 324.2188 | 324.2188 |  1953.81 KB |        1.00 |
+| Compress             | kb2000edgeCase |  3,405.14 us |   3.187 us |  1.00 | 324.2188 | 324.2188 | 324.2188 |  1953.81 KB |        1.00 |
+| CompressSimd         | kb2000edgeCase |  4,956.90 us |  12.558 us |  1.46 | 320.3125 | 320.3125 | 320.3125 |   1953.8 KB |        1.00 |
+|                      |                |              |            |       |          |          |          |             |             |
+| CompressSimdHarold   | kb4000         |  4,680.39 us |   4.714 us |  0.16 |        - |        - |        - | 12076.35 KB |        3.00 |
+| CompressSimd         | kb4000         |  4,739.57 us |  48.412 us |  0.17 | 156.2500 | 156.2500 | 156.2500 |  4025.89 KB |        1.00 |
+| CompressSimdNoSwitch | kb4000         |  6,038.64 us |  67.980 us |  0.21 | 156.2500 | 156.2500 | 156.2500 |  4025.89 KB |        1.00 |
+| Compress             | kb4000         | 28,418.41 us | 179.401 us |  1.00 | 187.5000 | 187.5000 | 187.5000 |  4026.08 KB |        1.00 |
+|                      |                |              |            |       |          |          |          |             |             |
+| CompressSimdHarold   | kb4000edgeCase |  4,481.91 us |  23.799 us |  0.61 |        - |        - |        - | 11717.78 KB |        3.00 |
+| CompressSimdNoSwitch | kb4000edgeCase |  5,597.94 us |  18.124 us |  0.76 | 156.2500 | 156.2500 | 156.2500 |  3906.37 KB |        1.00 |
+| Compress             | kb4000edgeCase |  7,352.41 us |  13.433 us |  1.00 | 156.2500 | 156.2500 | 156.2500 |  3906.37 KB |        1.00 |
+| CompressSimd         | kb4000edgeCase | 10,118.96 us | 440.924 us |  1.38 | 296.8750 | 296.8750 | 296.8750 |  3906.71 KB |        1.00 |
+|                      |                |              |            |       |          |          |          |             |             |
+| CompressSimd         | kb5000         |  5,592.89 us |   6.548 us |  0.16 | 156.2500 | 156.2500 | 156.2500 |  5032.24 KB |        1.00 |
+| CompressSimdHarold   | kb5000         |  5,798.76 us |  20.272 us |  0.16 |        - |        - |        - | 15095.41 KB |        3.00 |
+| CompressSimdNoSwitch | kb5000         |  7,375.83 us |  12.179 us |  0.21 | 156.2500 | 156.2500 | 156.2500 |  5032.24 KB |        1.00 |
+| Compress             | kb5000         | 35,149.14 us | 515.925 us |  1.00 | 200.0000 | 200.0000 | 200.0000 |  5032.47 KB |        1.00 |
+|                      |                |              |            |       |          |          |          |             |             |
+| CompressSimdHarold   | kb5000edgeCase |  5,592.96 us |  26.440 us |  0.66 |        - |        - |        - | 14647.18 KB |        3.00 |
+| CompressSimdNoSwitch | kb5000edgeCase |  6,791.18 us |   8.745 us |  0.81 | 156.2500 | 156.2500 | 156.2500 |  4882.84 KB |        1.00 |
+| Compress             | kb5000edgeCase |  8,434.37 us |  34.883 us |  1.00 | 296.8750 | 296.8750 | 296.8750 |  4883.18 KB |        1.00 |
+| CompressSimd         | kb5000edgeCase | 12,183.72 us |  24.779 us |  1.44 | 296.8750 | 296.8750 | 296.8750 |  4883.18 KB |        1.00 |
 
 ## Regular vs SIMD
 

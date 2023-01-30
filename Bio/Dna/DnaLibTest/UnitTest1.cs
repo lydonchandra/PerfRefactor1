@@ -252,6 +252,44 @@ public class UnitTest1
     }
 
     [Fact]
+    public void TestAa2iSimdNoSwitchLowercase()
+    {
+        unsafe
+        {
+            Vector256<byte> proteinLutUpper2 = Vector256.Load((byte*)bla.proteinLutUpper2);
+            var proteinMap = bla.proteinMap;
+            bla.aa2iSimdNoSwitch((byte)'a', proteinLutUpper2, proteinMap).ShouldBe((byte)0);
+            bla.aa2iSimdNoSwitch((byte)'r', proteinLutUpper2, proteinMap).ShouldBe((byte)1);
+            bla.aa2iSimdNoSwitch((byte)'n', proteinLutUpper2, proteinMap).ShouldBe((byte)2);
+            bla.aa2iSimdNoSwitch((byte)'d', proteinLutUpper2, proteinMap).ShouldBe((byte)3);
+            bla.aa2iSimdNoSwitch((byte)'c', proteinLutUpper2, proteinMap).ShouldBe((byte)4);
+            bla.aa2iSimdNoSwitch((byte)'q', proteinLutUpper2, proteinMap).ShouldBe((byte)5);
+            bla.aa2iSimdNoSwitch((byte)'e', proteinLutUpper2, proteinMap).ShouldBe((byte)6);
+            bla.aa2iSimdNoSwitch((byte)'g', proteinLutUpper2, proteinMap).ShouldBe((byte)7);
+            bla.aa2iSimdNoSwitch((byte)'h', proteinLutUpper2, proteinMap).ShouldBe((byte)8);
+            bla.aa2iSimdNoSwitch((byte)'i', proteinLutUpper2, proteinMap).ShouldBe((byte)9);
+            bla.aa2iSimdNoSwitch((byte)'l', proteinLutUpper2, proteinMap).ShouldBe((byte)10);
+            bla.aa2iSimdNoSwitch((byte)'k', proteinLutUpper2, proteinMap).ShouldBe((byte)11);
+            bla.aa2iSimdNoSwitch((byte)'m', proteinLutUpper2, proteinMap).ShouldBe((byte)12);
+            bla.aa2iSimdNoSwitch((byte)'f', proteinLutUpper2, proteinMap).ShouldBe((byte)13);
+            bla.aa2iSimdNoSwitch((byte)'p', proteinLutUpper2, proteinMap).ShouldBe((byte)14);
+            bla.aa2iSimdNoSwitch((byte)'s', proteinLutUpper2, proteinMap).ShouldBe((byte)15);
+            bla.aa2iSimdNoSwitch((byte)'t', proteinLutUpper2, proteinMap).ShouldBe((byte)16);
+            bla.aa2iSimdNoSwitch((byte)'w', proteinLutUpper2, proteinMap).ShouldBe((byte)17);
+            bla.aa2iSimdNoSwitch((byte)'y', proteinLutUpper2, proteinMap).ShouldBe((byte)18);
+            bla.aa2iSimdNoSwitch((byte)'v', proteinLutUpper2, proteinMap).ShouldBe((byte)19);
+            bla.aa2iSimdNoSwitch((byte)'x', proteinLutUpper2, proteinMap).ShouldBe(bla.ANY);
+            bla.aa2iSimdNoSwitch((byte)'j', proteinLutUpper2, proteinMap).ShouldBe(bla.ANY);
+            bla.aa2iSimdNoSwitch((byte)'o', proteinLutUpper2, proteinMap).ShouldBe(bla.ANY);
+            bla.aa2iSimdNoSwitch((byte)'u', proteinLutUpper2, proteinMap).ShouldBe((byte)4);
+            bla.aa2iSimdNoSwitch((byte)'b', proteinLutUpper2, proteinMap).ShouldBe((byte)3);
+            bla.aa2iSimdNoSwitch((byte)'z', proteinLutUpper2, proteinMap).ShouldBe((byte)6);
+            bla.aa2iSimdNoSwitch((byte)' ', proteinLutUpper2, proteinMap).ShouldBe(unchecked((byte)-1));
+            bla.aa2iSimdNoSwitch((byte)'{', proteinLutUpper2, proteinMap).ShouldBe(unchecked((byte)-2));
+        }
+    }
+
+    [Fact]
     public void TestAa2iSimdNoIf()
     {
         unsafe

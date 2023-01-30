@@ -4,7 +4,9 @@
     "DnaConsole": {
       "commandName": "Project",
       "environmentVariables": {
-        "DOTNET_JitDisasm": "CompressSimdHarold"
+        "DOTNET_JitDisasm": "Compress"
+        //        "DOTNET_JitDisasm": "CompressSimdHarold"
+        //        "DOTNET_JitDisasm": "CompressSimdHarold"
       }
     }
   }

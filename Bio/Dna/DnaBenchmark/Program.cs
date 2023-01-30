@@ -268,11 +268,11 @@ public class ProteinCompressBenchmark
         return bla.CompressSimd(dataBytes[_path]);
     }
 
-    // [Benchmark]
-    // public byte[] CompressSimdNoIf()
-    // {
-    //     return bla.CompressSimdNoIf(dataBytes[_path]);
-    // }
+    [Benchmark]
+    public byte[] CompressSimdNoSwitch()
+    {
+        return bla.CompressSimdNoSwitch(dataBytes[_path]);
+    }
 
     [Benchmark]
     public Span<sbyte> CompressSimdHarold()
